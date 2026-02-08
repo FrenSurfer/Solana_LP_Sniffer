@@ -1,0 +1,8 @@
+sniffer/
+node_modules/
+.env
+*.log
+dist/
+.next/
+frontend/.next/
+backend/data/

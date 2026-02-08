@@ -123,23 +123,16 @@ export function TokenTable({
     onVisibleCountChange?.(filtered.length);
   }, [filtered.length, onVisibleCountChange]);
 
-  useEffect(() => {
-    const el = selectAllRef.current;
-    if (el) el.indeterminate = someSelected && !allSelected;
-  }, [someSelected, allSelected]);
-
   const sorted = [...filtered].sort((a, b) => {
     const key = sortBy;
-    let aVal: number | string = (a as Record<string, unknown>)[key] as
-      | number
-      | string;
-    let bVal: number | string = (b as Record<string, unknown>)[key] as
-      | number
-      | string;
-    if (key === "is_pump") {
-      aVal = a.is_pump ? 1 : 0;
-      bVal = b.is_pump ? 1 : 0;
-    }
+    const getVal = (t: Token): number | string =>
+      key === "is_pump"
+        ? t.is_pump
+          ? 1
+          : 0
+        : (t as unknown as Record<string, number | string>)[key] ?? 0;
+    const aVal = getVal(a);
+    const bVal = getVal(b);
     if (typeof aVal === "number" && typeof bVal === "number") {
       return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
     }
@@ -157,6 +150,11 @@ export function TokenTable({
   const allSelected =
     sorted.length > 0 && sorted.every((t) => selectedAddresses.has(t.address));
   const someSelected = sorted.some((t) => selectedAddresses.has(t.address));
+
+  useEffect(() => {
+    const el = selectAllRef.current;
+    if (el) el.indeterminate = someSelected && !allSelected;
+  }, [someSelected, allSelected]);
 
   const SortHeader = ({
     col,
@@ -183,7 +181,7 @@ export function TokenTable({
   );
 
   return (
-    <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)] rounded-lg border border-zinc-600">
+    <div className="overflow-x-auto rounded-lg border border-zinc-600">
       <table className="w-full border-collapse text-sm text-right bg-zinc-800 table-fixed">
         <colgroup>
           <col className="w-[3%]" />

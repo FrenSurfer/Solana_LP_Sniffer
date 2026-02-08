@@ -90,7 +90,9 @@ export function FiltersPanel({
             <input
               type="checkbox"
               checked={filterState.filterSuspicious}
-              onChange={(e) => updateFilter("filterSuspicious", e.target.checked)}
+              onChange={(e) =>
+                updateFilter("filterSuspicious", e.target.checked)
+              }
               className="w-4 h-4 rounded border-zinc-500"
             />
             Hide suspicious
@@ -103,16 +105,21 @@ export function FiltersPanel({
           Minimums
         </span>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
-          {[
-            ["minLiquidity", "Liquidity ($)"],
-            ["minVolume", "Volume ($)"],
-            ["mcapMin", "Market Cap ($)"],
-            ["minHolders", "Holders"],
-            ["minWallets24h", "Wallets 24h"],
-            ["minPriceChange", "Price change %"],
-            ["minVolumeChange", "Volume change %"],
-          ] as const.map(([key, label]) => (
-            <label key={key} className="flex flex-col gap-1 text-zinc-400 text-sm">
+          {(
+            [
+              ["minLiquidity", "Liquidity ($)"],
+              ["minVolume", "Volume ($)"],
+              ["mcapMin", "Market Cap ($)"],
+              ["minHolders", "Holders"],
+              ["minWallets24h", "Wallets 24h"],
+              ["minPriceChange", "Price change %"],
+              ["minVolumeChange", "Volume change %"],
+            ] as const
+          ).map(([key, label]) => (
+            <label
+              key={key}
+              className="flex flex-col gap-1 text-zinc-400 text-sm"
+            >
               <span>{label}</span>
               <input
                 type="number"
@@ -131,18 +138,26 @@ export function FiltersPanel({
           Maximums
         </span>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
-          {[
-            ["mcapMax", "Market Cap ($)"],
-            ["maxPriceChange", "Price change %"],
-            ["maxVolumeChange", "Volume change %"],
-          ] as const.map(([key, label]) => (
-            <label key={key} className="flex flex-col gap-1 text-zinc-400 text-sm">
+          {(
+            [
+              ["mcapMax", "Market Cap ($)"],
+              ["maxPriceChange", "Price change %"],
+              ["maxVolumeChange", "Volume change %"],
+            ] as const
+          ).map(([key, label]) => (
+            <label
+              key={key}
+              className="flex flex-col gap-1 text-zinc-400 text-sm"
+            >
               <span>{label}</span>
               <input
                 type="number"
                 value={filterState[key as keyof FilterState] ?? ""}
                 onChange={(e) =>
-                  updateFilter(key as keyof FilterState, parseNum(e.target.value))
+                  updateFilter(
+                    key as keyof FilterState,
+                    parseNum(e.target.value)
+                  )
                 }
                 placeholder="—"
                 className="max-w-[120px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
@@ -158,20 +173,26 @@ export function FiltersPanel({
           onClick={() => setShowThresholds((v) => !v)}
           className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 text-zinc-200 rounded text-left text-sm hover:bg-zinc-600"
         >
-          Detection thresholds (suspicious highlight) {showThresholds ? "▲" : "▼"}
+          Detection thresholds (suspicious highlight){" "}
+          {showThresholds ? "▲" : "▼"}
         </button>
         {showThresholds && (
           <div className="mt-2 pt-3 border-t border-zinc-600 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
-            {[
-              ["volumeChangeMin", "volumeChangeMax", "Volume change %"],
-              ["priceChangeMin", "priceChangeMax", "Price change %"],
-              ["volLiqThreshold", null, "Vol/Liq >"],
-              ["volMcThreshold", null, "Vol/MC >"],
-              ["liqMcThreshold", null, "Liq/MC <"],
-              ["wallets24hThreshold", null, "Wallets 24h <"],
-              ["holdersThreshold", null, "Holders <"],
-            ] as const.map(([keyA, keyB, label]) => (
-              <label key={String(keyA)} className="flex flex-col gap-1 text-zinc-400 text-sm">
+            {(
+              [
+                ["volumeChangeMin", "volumeChangeMax", "Volume change %"],
+                ["priceChangeMin", "priceChangeMax", "Price change %"],
+                ["volLiqThreshold", null, "Vol/Liq >"],
+                ["volMcThreshold", null, "Vol/MC >"],
+                ["liqMcThreshold", null, "Liq/MC <"],
+                ["wallets24hThreshold", null, "Wallets 24h <"],
+                ["holdersThreshold", null, "Holders <"],
+              ] as const
+            ).map(([keyA, keyB, label]) => (
+              <label
+                key={String(keyA)}
+                className="flex flex-col gap-1 text-zinc-400 text-sm"
+              >
                 <span>{label}</span>
                 <div className="flex gap-2">
                   <input
@@ -180,7 +201,9 @@ export function FiltersPanel({
                     onChange={(e) =>
                       updateThreshold(keyA, parseNum(e.target.value))
                     }
-                    step={keyA.includes("Liq") || keyA.includes("Mc") ? 0.01 : 1}
+                    step={
+                      keyA.includes("Liq") || keyA.includes("Mc") ? 0.01 : 1
+                    }
                     className="max-w-[70px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
                   />
                   {keyB && (

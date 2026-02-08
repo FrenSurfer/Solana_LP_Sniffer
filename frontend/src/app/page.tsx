@@ -62,16 +62,19 @@ export default function Home() {
     }
   }, [loadTokens]);
 
-  const handleSort = useCallback((key: SortKey) => {
-    setSortBy((prev) => {
-      if (prev === key) {
+  const handleSort = useCallback(
+    (key: SortKey) => {
+      if (sortBy === key) {
+        // Même colonne : on alterne desc → asc → desc
         setSortOrder((o) => (o === "asc" ? "desc" : "asc"));
       } else {
+        // Nouvelle colonne : on trie par défaut en décroissant
+        setSortBy(key);
         setSortOrder("desc");
       }
-      return key;
-    });
-  }, []);
+    },
+    [sortBy]
+  );
 
   const handleToggleSelect = useCallback((address: string) => {
     setSelectedAddresses((prev) => {
@@ -132,7 +135,25 @@ export default function Home() {
           >
             {refreshing ? "Refreshing…" : "Refresh data"}
           </button>
-          <div className="flex items-center gap-2 ml-auto">
+        </header>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-600 rounded-lg text-red-300 text-sm">
+            {error}
+          </div>
+        )}
+
+        <FiltersPanel
+          filterState={filterState}
+          thresholdState={thresholdState}
+          visibleCount={visibleCount}
+          onFiltersChange={setFilterState}
+          onThresholdsChange={setThresholdState}
+          onApply={() => {}}
+        />
+
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
             <input
               type="text"
               value={searchQuery}
@@ -151,24 +172,6 @@ export default function Home() {
               </button>
             )}
           </div>
-        </header>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-900/30 border border-red-600 rounded-lg text-red-300 text-sm">
-            {error}
-          </div>
-        )}
-
-        <FiltersPanel
-          filterState={filterState}
-          thresholdState={thresholdState}
-          visibleCount={visibleCount}
-          onFiltersChange={setFilterState}
-          onThresholdsChange={setThresholdState}
-          onApply={() => {}}
-        />
-
-        <div className="mb-3 flex items-center gap-3">
           <button
             type="button"
             onClick={handleCompare}

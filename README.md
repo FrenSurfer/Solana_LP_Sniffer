@@ -1,6 +1,6 @@
 # Solana Token Sniffer
 
-A web tool to browse and filter **Solana tokens** using the [Birdeye](https://birdeye.so) API. Data is displayed in a table with quick links to [GMGN](https://gmgn.ai) and [Bubblemaps](https://app.bubblemaps.io).
+A web tool **(ONLY LOCAL FOR NOW)** to browse and filter **Solana tokens** using the [Birdeye](https://birdeye.so) API. Data is displayed in a table with quick links to [GMGN](https://gmgn.ai) and [Bubblemaps](https://app.bubblemaps.io).
 
 ## Stack
 

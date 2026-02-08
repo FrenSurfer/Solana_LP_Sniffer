@@ -21,7 +21,6 @@ export interface FilterState {
   mcapMax: number;
   filterSuspicious: boolean;
   filter24h: boolean;
-  minHolders: number;
   minWallets24h: number;
   minVolumeChange: number;
   maxVolumeChange: number;
@@ -36,7 +35,6 @@ export const defaultFilters: FilterState = {
   mcapMax: 0,
   filterSuspicious: false,
   filter24h: true,
-  minHolders: 0,
   minWallets24h: 0,
   minVolumeChange: 0,
   maxVolumeChange: 0,
@@ -53,7 +51,6 @@ export interface ThresholdState {
   volMcThreshold: number;
   liqMcThreshold: number;
   wallets24hThreshold: number;
-  holdersThreshold: number;
 }
 
 export const defaultThresholds: ThresholdState = {
@@ -65,5 +62,4 @@ export const defaultThresholds: ThresholdState = {
   volMcThreshold: 3,
   liqMcThreshold: 0.05,
   wallets24hThreshold: 100,
-  holdersThreshold: 500,
 };

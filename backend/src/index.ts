@@ -2,6 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { BirdeyeAPIClient } from "./birdeye.js";
+import { getPriceChange24hByAddress } from "./dexscreener.js";
 import { processTokenList } from "./dataProcessor.js";
 import type { ProcessedToken } from "./types.js";
 
@@ -20,7 +21,30 @@ async function fetchTokenData(forceRefresh = false): Promise<void> {
     return;
   }
   tokenData = processTokenList(tokens);
-  console.info(`Processed ${tokenData.length} tokens`);
+
+  // Enrich with 24h price change from DexScreener (Birdeye free tier often doesn't provide it)
+  try {
+    const addresses = tokenData.map((t) => t.address);
+    const priceChangeMap = await getPriceChange24hByAddress(addresses);
+    let enriched = 0;
+    for (const t of tokenData) {
+      const pc = priceChangeMap.get(t.address);
+      if (pc != null && Number.isFinite(pc)) {
+        t.price_change_24h = pc;
+        enriched++;
+      }
+    }
+    console.info(
+      `DexScreener: enriched ${enriched}/${tokenData.length} tokens with 24h price change`
+    );
+  } catch (e) {
+    console.warn(
+      "DexScreener enrichment failed (24h price change may be 0):",
+      e
+    );
+  }
+
+  console.info(`Processed ${tokenData.length} tokens (ready to serve)`);
 }
 
 const app = Fastify({ logger: true });

@@ -10,7 +10,7 @@ A web tool **(ONLY LOCAL FOR NOW)** to browse and filter **Solana tokens** using
 ## Features
 
 - Fetches top Solana tokens (volume, liquidity, market cap) from Birdeye
-- 30-minute JSON cache on the API to limit requests
+- 30-minute JSON cache on the API for token list
 - **Filters**: liquidity, volume, market cap, volume/price change, “hide suspicious”, “tokens > 24h”, detection thresholds
 - **Search** by symbol or name
 - **Sort** by any column (symbol, name, liquidity, volume, etc.); click again to toggle ascending/descending
@@ -28,7 +28,7 @@ API_KEY=your_birdeye_api_key
 PORT=3001
 ```
 
-Get a key from [Birdeye](https://birdeye.so) (public API).
+Get an API key from [Birdeye](https://birdeye.so) (public API).
 
 ### 2. Backend
 

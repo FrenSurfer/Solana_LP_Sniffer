@@ -14,6 +14,7 @@ export type SortKey =
   | "liquidity"
   | "volume"
   | "mc"
+  | "price_change_24h"
   | "v24hChangePercent"
   | "volume_liquidity_ratio"
   | "volume_mc_ratio"
@@ -186,16 +187,16 @@ export function TokenTable({
         <colgroup>
           <col className="w-[3%]" />
           <col className="w-[7%]" />
-          <col className="w-[9%]" />
-          <col className="w-[10%]" />
-          <col className="w-[10%]" />
-          <col className="w-[10%]" />
-          <col className="w-[10%]" />
-          <col className="w-[9%]" />
-          <col className="w-[9%]" />
-          <col className="w-[9%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
+          <col className="w-[7%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
+          <col className="w-[7%]" />
+          <col className="w-[7%]" />
           <col className="w-[4%]" />
-          <col className="w-[6%]" />
+          <col className="w-[5%]" />
         </colgroup>
         <thead>
           <tr>
@@ -215,6 +216,11 @@ export function TokenTable({
             <SortHeader col="liquidity" label="Liq. ($)" />
             <SortHeader col="volume" label="Vol. 24h ($)" />
             <SortHeader col="mc" label="MCap ($)" />
+            <SortHeader
+              col="price_change_24h"
+              label="Δ Prix 24h (%)"
+              tooltip="24h price change (DexScreener)"
+            />
             <SortHeader
               col="v24hChangePercent"
               label="Δ Volume (%)"
@@ -302,6 +308,17 @@ export function TokenTable({
                 </td>
                 <td className="px-2 py-2 border border-zinc-600">
                   {formatNumber(token.mc)}
+                </td>
+                <td
+                  className={`px-2 py-2 border border-zinc-600 ${
+                    token.price_change_24h > 0
+                      ? "text-emerald-500"
+                      : token.price_change_24h < 0
+                      ? "text-red-500"
+                      : "text-zinc-400"
+                  }`}
+                >
+                  {formatPercent(token.price_change_24h)}
                 </td>
                 <td
                   className={`px-2 py-2 border border-zinc-600 ${

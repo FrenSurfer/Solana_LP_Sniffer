@@ -185,31 +185,34 @@ export function TokenTable({
     <div className="overflow-x-auto rounded-lg border border-zinc-600">
       <table className="w-full border-collapse text-sm text-right bg-zinc-800 table-fixed">
         <colgroup>
-          <col className="w-[3%]" />
-          <col className="w-[7%]" />
-          <col className="w-[8%]" />
-          <col className="w-[8%]" />
-          <col className="w-[8%]" />
-          <col className="w-[7%]" />
+          <col className="w-6" />
+          <col className="w-[9%]" />
+          <col className="w-[9%]" />
           <col className="w-[8%]" />
           <col className="w-[8%]" />
           <col className="w-[7%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
           <col className="w-[7%]" />
-          <col className="w-[4%]" />
-          <col className="w-[5%]" />
+          <col className="w-[7%]" />
+          <col className="w-[8%] min-w-[4.5rem]" />
+          <col className="w-10" />
+          <col className="w-16" />
         </colgroup>
         <thead>
           <tr>
-            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 w-[3%]">
-              <input
-                ref={selectAllRef}
-                type="checkbox"
-                checked={allSelected}
-                onChange={(e) =>
-                  onSelectAll(e.target.checked, visibleAddresses)
-                }
-                className="w-4 h-4 cursor-pointer"
-              />
+            <th className="sticky top-0 z-10 px-0.5 py-3 bg-zinc-700 border border-zinc-600 w-6 shrink-0 min-w-6 text-center">
+              <span className="flex justify-center">
+                <input
+                  ref={selectAllRef}
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={(e) =>
+                    onSelectAll(e.target.checked, visibleAddresses)
+                  }
+                  className="w-4 h-4 cursor-pointer"
+                />
+              </span>
             </th>
             <SortHeader col="symbol" label="Symbol" />
             <SortHeader col="name" label="Name" />
@@ -241,12 +244,24 @@ export function TokenTable({
               label="Liq/MC"
               tooltip="Liquidity / Market Cap"
             />
-            <SortHeader
-              col="is_pump"
-              label="Pump"
-              tooltip="Address ends with 'pump'"
-            />
-            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 text-right font-semibold text-zinc-200">
+            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 text-center font-semibold text-zinc-200 w-10 shrink-0 min-w-10">
+              <button
+                type="button"
+                onClick={() => onSort("is_pump")}
+                className="flex items-center justify-center gap-1 w-full text-center hover:text-blue-400"
+                title="Address ends with 'pump'"
+              >
+                Pump
+                <span className="opacity-50 text-xs">
+                  {sortBy === "is_pump"
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : "▼"}
+                </span>
+              </button>
+            </th>
+            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 text-center font-semibold text-zinc-200 w-16 shrink-0">
               Bubblemaps
             </th>
           </tr>
@@ -259,13 +274,15 @@ export function TokenTable({
                 key={token.address}
                 className="border-b border-zinc-600 hover:bg-zinc-700 even:bg-zinc-800/50"
               >
-                <td className="px-2 py-2 border border-zinc-600">
-                  <input
-                    type="checkbox"
-                    checked={selectedAddresses.has(token.address)}
-                    onChange={() => onToggleSelect(token.address)}
-                    className="w-4 h-4 cursor-pointer"
-                  />
+                <td className="px-0.5 py-2 border border-zinc-600 w-6 shrink-0 min-w-6 text-center">
+                  <span className="flex justify-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedAddresses.has(token.address)}
+                      onChange={() => onToggleSelect(token.address)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                  </span>
                 </td>
                 <td className="px-2 py-2 border border-zinc-600 whitespace-nowrap overflow-hidden text-ellipsis">
                   <span className="flex items-center gap-1">
@@ -350,10 +367,10 @@ export function TokenTable({
                 >
                   {formatRatio(token.liquidity_mc_ratio)}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 text-center">
+                <td className="px-2 py-2 border border-zinc-600 text-center w-10 shrink-0">
                   {token.is_pump ? "✓" : ""}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 text-center">
+                <td className="px-2 py-2 border border-zinc-600 text-center w-16 shrink-0">
                   <a
                     href={`${BUBBLEMAPS_BASE}${token.address}`}
                     target="_blank"

@@ -111,9 +111,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-zinc-300">
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-10 h-10 border-2 border-focus-ring border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p>Loading tokens...</p>
         </div>
       </div>
@@ -121,24 +121,22 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-zinc-200 p-4 md:p-6">
+    <div className="min-h-screen bg-background text-text p-4 md:p-6">
       <div className="max-w-[1600px] mx-auto">
         <header className="mb-4 flex flex-wrap items-center gap-3">
-          <h1 className="text-xl font-bold text-zinc-100">
-            Solana Token Sniffer
-          </h1>
+          <h1 className="text-xl font-bold text-text">Solana Token Sniffer</h1>
           <button
             type="button"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-600 disabled:cursor-not-allowed text-white text-sm rounded-lg"
+            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg"
           >
             {refreshing ? "Refreshing…" : "Refresh data"}
           </button>
         </header>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-900/30 border border-red-600 rounded-lg text-red-300 text-sm">
+          <div className="mb-4 p-3 bg-error-bg border border-error-border rounded-lg text-error-text text-sm">
             {error}
           </div>
         )}
@@ -159,13 +157,13 @@ export default function Home() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search token..."
-              className="w-48 px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+              className="w-48 px-3 py-2 bg-surface-elevated border border-input-border rounded-lg text-text placeholder-text-dim focus:outline-none focus:border-focus-ring"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="p-2 text-zinc-500 hover:text-zinc-200"
+                className="p-2 text-text-dim hover:text-text"
                 aria-label="Clear search"
               >
                 ✕
@@ -176,11 +174,11 @@ export default function Home() {
             type="button"
             onClick={handleCompare}
             disabled={!canCompare || compareLoading}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-600 disabled:cursor-not-allowed text-white text-sm rounded-lg"
+            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg"
           >
             {compareLoading ? "Loading…" : "Compare selected tokens"}
           </button>
-          <span className="text-sm text-zinc-500">
+          <span className="text-sm text-text-dim">
             ({selectedCount} selected)
           </span>
         </div>

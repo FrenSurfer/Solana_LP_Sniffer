@@ -30,7 +30,7 @@ const metricRows: {
     label: "Price change (%)",
     fmt: (t) => (
       <span
-        className={t.price_change_24h > 0 ? "text-emerald-500" : "text-red-500"}
+        className={t.price_change_24h > 0 ? "text-positive" : "text-negative"}
       >
         {t.price_change_24h.toFixed(2)}%
       </span>
@@ -73,26 +73,24 @@ export function ComparisonModal({ tokens, onClose }: ComparisonModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-zinc-800 border border-zinc-600 rounded-lg p-5 w-[90%] max-w-4xl max-h-[90vh] overflow-auto"
+        className="bg-surface-elevated border border-border rounded-lg p-5 w-[90%] max-w-4xl max-h-[90vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-zinc-200">
-            Token comparison
-          </h2>
+          <h2 className="text-lg font-semibold text-text">Token comparison</h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-200 text-2xl leading-none"
+            className="text-text-muted hover:text-text text-2xl leading-none"
           >
             ×
           </button>
         </div>
-        <div className="flex flex-wrap gap-3 mb-3 p-2 bg-zinc-700 rounded">
+        <div className="flex flex-wrap gap-3 mb-3 p-2 bg-surface-hover rounded">
           {metricRows.map(({ key, label }) => (
             <label
               key={key}
-              className="inline-flex items-center gap-2 cursor-pointer text-sm text-zinc-300"
+              className="inline-flex items-center gap-2 cursor-pointer text-sm text-text"
             >
               <input
                 type="checkbox"
@@ -107,14 +105,14 @@ export function ComparisonModal({ tokens, onClose }: ComparisonModalProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="border-b border-zinc-600">
-                <th className="text-left py-2 pr-4 font-semibold text-zinc-300">
+              <tr className="border-b border-border">
+                <th className="text-left py-2 pr-4 font-semibold text-text">
                   Metric
                 </th>
                 {tokens.map((t) => (
                   <th
                     key={t.address}
-                    className="text-right py-2 px-2 font-semibold text-zinc-300"
+                    className="text-right py-2 px-2 font-semibold text-text"
                   >
                     {t.symbol}
                   </th>
@@ -127,15 +125,15 @@ export function ComparisonModal({ tokens, onClose }: ComparisonModalProps) {
                   visibleMetrics.has(row.key) && (
                     <tr
                       key={row.key}
-                      className="border-b border-zinc-700 even:bg-zinc-800/50"
+                      className="border-b border-border even:bg-surface-elevated/50"
                     >
-                      <td className="text-left py-2 pr-4 font-medium text-zinc-400">
+                      <td className="text-left py-2 pr-4 font-medium text-text-muted">
                         {row.label}
                       </td>
                       {tokens.map((t) => (
                         <td
                           key={t.address}
-                          className="text-right py-2 px-2 text-zinc-200"
+                          className="text-right py-2 px-2 text-text"
                         >
                           {row.fmt(t)}
                         </td>

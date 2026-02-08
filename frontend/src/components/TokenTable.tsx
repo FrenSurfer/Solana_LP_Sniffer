@@ -166,11 +166,11 @@ export function TokenTable({
     label: string;
     tooltip?: string;
   }) => (
-    <th className="sticky top-0 z-10 px-3 py-3 bg-zinc-700 border border-zinc-600 text-right font-semibold text-zinc-200 min-w-[80px]">
+    <th className="sticky top-0 z-10 px-3 py-3 bg-surface-hover border border-border text-right font-semibold text-text min-w-[80px]">
       <button
         type="button"
         onClick={() => onSort(col)}
-        className="flex items-center justify-end gap-1 w-full text-right hover:text-blue-400"
+        className="flex items-center justify-end gap-1 w-full text-right hover:text-link"
         title={tooltip}
       >
         {label}
@@ -182,8 +182,8 @@ export function TokenTable({
   );
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-600">
-      <table className="w-full border-collapse text-sm text-right bg-zinc-800 table-fixed">
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full border-collapse text-sm text-right bg-surface-elevated table-fixed">
         <colgroup>
           <col className="w-6" />
           <col className="w-[9%]" />
@@ -201,7 +201,7 @@ export function TokenTable({
         </colgroup>
         <thead>
           <tr>
-            <th className="sticky top-0 z-10 px-0.5 py-3 bg-zinc-700 border border-zinc-600 w-6 shrink-0 min-w-6 text-center">
+            <th className="sticky top-0 z-10 px-0.5 py-3 bg-surface-hover border border-border w-6 shrink-0 min-w-6 text-center">
               <span className="flex justify-center">
                 <input
                   ref={selectAllRef}
@@ -244,11 +244,11 @@ export function TokenTable({
               label="Liq/MC"
               tooltip="Liquidity / Market Cap"
             />
-            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 text-center font-semibold text-zinc-200 w-10 shrink-0 min-w-10">
+            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-center font-semibold text-text w-10 shrink-0 min-w-10">
               <button
                 type="button"
                 onClick={() => onSort("is_pump")}
-                className="flex items-center justify-center gap-1 w-full text-center hover:text-blue-400"
+                className="flex items-center justify-center gap-1 w-full text-center hover:text-link"
                 title="Address ends with 'pump'"
               >
                 Pump
@@ -261,7 +261,7 @@ export function TokenTable({
                 </span>
               </button>
             </th>
-            <th className="sticky top-0 z-10 px-2 py-3 bg-zinc-700 border border-zinc-600 text-center font-semibold text-zinc-200 w-16 shrink-0">
+            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-center font-semibold text-text w-16 shrink-0">
               Bubblemaps
             </th>
           </tr>
@@ -272,9 +272,9 @@ export function TokenTable({
             return (
               <tr
                 key={token.address}
-                className="border-b border-zinc-600 hover:bg-zinc-700 even:bg-zinc-800/50"
+                className="border-b border-border hover:bg-surface-hover even:bg-surface-elevated/50"
               >
-                <td className="px-0.5 py-2 border border-zinc-600 w-6 shrink-0 min-w-6 text-center">
+                <td className="px-0.5 py-2 border border-border w-6 shrink-0 min-w-6 text-center">
                   <span className="flex justify-center">
                     <input
                       type="checkbox"
@@ -284,98 +284,98 @@ export function TokenTable({
                     />
                   </span>
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 whitespace-nowrap overflow-hidden text-ellipsis">
+                <td className="px-2 py-2 border border-border whitespace-nowrap overflow-hidden text-ellipsis">
                   <span className="flex items-center gap-1">
                     <a
                       href={`${GMGN_BASE}${token.address}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline truncate"
+                      className="text-link hover:underline truncate"
                     >
                       {token.symbol}
                     </a>
                     <button
                       type="button"
                       onClick={() => copyAddress(token.address)}
-                      className="shrink-0 px-1.5 py-0.5 text-xs border border-zinc-600 rounded text-zinc-500 hover:text-zinc-200"
+                      className="shrink-0 px-1.5 py-0.5 text-xs border border-border rounded text-text-dim hover:text-text"
                       title="Copy address"
                     >
                       ⎘
                     </button>
                     {copied === token.address && (
-                      <span className="text-emerald-500 text-xs">OK</span>
+                      <span className="text-positive text-xs">OK</span>
                     )}
                   </span>
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 overflow-hidden text-ellipsis">
+                <td className="px-2 py-2 border border-border overflow-hidden text-ellipsis">
                   <a
                     href={`${GMGN_BASE}${token.address}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline truncate block"
+                    className="text-link hover:underline truncate block"
                   >
                     {token.name}
                   </a>
                 </td>
-                <td className="px-2 py-2 border border-zinc-600">
+                <td className="px-2 py-2 border border-border">
                   {formatNumber(token.liquidity)}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600">
+                <td className="px-2 py-2 border border-border">
                   {formatNumber(token.volume)}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600">
+                <td className="px-2 py-2 border border-border">
                   {formatNumber(token.mc)}
                 </td>
                 <td
-                  className={`px-2 py-2 border border-zinc-600 ${
+                  className={`px-2 py-2 border border-border ${
                     token.price_change_24h > 0
-                      ? "text-emerald-500"
+                      ? "text-positive"
                       : token.price_change_24h < 0
-                      ? "text-red-500"
-                      : "text-zinc-400"
+                      ? "text-negative"
+                      : "text-text-muted"
                   }`}
                 >
                   {formatPercent(token.price_change_24h)}
                 </td>
                 <td
-                  className={`px-2 py-2 border border-zinc-600 ${
+                  className={`px-2 py-2 border border-border ${
                     token.v24hChangePercent > 0
-                      ? "text-emerald-500"
-                      : "text-red-500"
-                  } ${sus.volCh ? "bg-amber-500/20" : ""}`}
+                      ? "text-positive"
+                      : "text-negative"
+                  } ${sus.volCh ? "bg-warning-muted" : ""}`}
                 >
                   {formatPercent(token.v24hChangePercent)}
                 </td>
                 <td
-                  className={`px-2 py-2 border border-zinc-600 ${
-                    sus.volLiq ? "bg-amber-500/20" : ""
+                  className={`px-2 py-2 border border-border ${
+                    sus.volLiq ? "bg-warning-muted" : ""
                   }`}
                 >
                   {formatRatio(token.volume_liquidity_ratio)}
                 </td>
                 <td
-                  className={`px-2 py-2 border border-zinc-600 ${
-                    sus.volMc ? "bg-amber-500/20" : ""
+                  className={`px-2 py-2 border border-border ${
+                    sus.volMc ? "bg-warning-muted" : ""
                   }`}
                 >
                   {formatRatio(token.volume_mc_ratio)}
                 </td>
                 <td
-                  className={`px-2 py-2 border border-zinc-600 ${
-                    sus.liqMc ? "bg-amber-500/20" : ""
+                  className={`px-2 py-2 border border-border ${
+                    sus.liqMc ? "bg-warning-muted" : ""
                   }`}
                 >
                   {formatRatio(token.liquidity_mc_ratio)}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 text-center w-10 shrink-0">
+                <td className="px-2 py-2 border border-border text-center w-10 shrink-0">
                   {token.is_pump ? "✓" : ""}
                 </td>
-                <td className="px-2 py-2 border border-zinc-600 text-center w-16 shrink-0">
+                <td className="px-2 py-2 border border-border text-center w-16 shrink-0">
                   <a
                     href={`${BUBBLEMAPS_BASE}${token.address}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-300 hover:text-blue-400"
+                    className="text-text hover:text-link"
                     title="Bubblemaps"
                   >
                     🔍
@@ -387,7 +387,7 @@ export function TokenTable({
         </tbody>
       </table>
       {sorted.length === 0 && (
-        <div className="py-8 text-center text-zinc-500">
+        <div className="py-8 text-center text-text-dim">
           No tokens match filters.
         </div>
       )}

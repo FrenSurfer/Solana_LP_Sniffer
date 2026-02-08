@@ -49,26 +49,26 @@ export function FiltersPanel({
   }, [onFiltersChange, onApply]);
 
   return (
-    <div className="rounded-lg border border-zinc-600 bg-zinc-800 mb-4 overflow-hidden">
+    <div className="rounded-lg border border-border bg-surface-elevated mb-4 overflow-hidden">
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
-        className="w-full flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-zinc-600 bg-zinc-800 hover:bg-zinc-700/80 text-left"
+        className="w-full flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-border bg-surface-elevated hover:bg-surface-hover text-left"
       >
         <span className="flex items-center gap-2">
           <span
-            className="text-zinc-400 text-sm transition-transform"
+            className="text-text-muted text-sm transition-transform"
             style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
           >
             ▼
           </span>
-          <h3 className="text-base font-semibold text-zinc-200">Filters</h3>
+          <h3 className="text-base font-semibold text-text">Filters</h3>
         </span>
         <div
           className="flex items-center gap-2"
           onClick={(e) => e.stopPropagation()}
         >
-          <span className="text-sm font-semibold text-zinc-400">
+          <span className="text-sm font-semibold text-text-muted">
             {visibleCount} tokens
           </span>
           <button
@@ -77,7 +77,7 @@ export function FiltersPanel({
               e.stopPropagation();
               onApply();
             }}
-            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-md"
+            className="px-3 py-1.5 bg-button-success hover:bg-button-success-hover text-button-text text-sm rounded-md"
           >
             Apply
           </button>
@@ -87,7 +87,7 @@ export function FiltersPanel({
               e.stopPropagation();
               resetFilters();
             }}
-            className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-sm rounded-md"
+            className="px-3 py-1.5 bg-button-danger hover:bg-button-danger-hover text-button-text text-sm rounded-md"
           >
             Reset
           </button>
@@ -97,27 +97,27 @@ export function FiltersPanel({
       {isOpen && (
         <div className="p-5 pt-4">
           <div className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500 block mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-text-dim block mb-2">
               Quick
             </span>
             <div className="flex flex-wrap gap-6 items-center">
-              <label className="inline-flex items-center gap-2 cursor-pointer text-zinc-200 text-sm">
+              <label className="inline-flex items-center gap-2 cursor-pointer text-text text-sm">
                 <input
                   type="checkbox"
                   checked={filterState.filter24h}
                   onChange={(e) => updateFilter("filter24h", e.target.checked)}
-                  className="w-4 h-4 rounded border-zinc-500"
+                  className="w-4 h-4 rounded border-border-muted"
                 />
                 Tokens &gt; 24h
               </label>
-              <label className="inline-flex items-center gap-2 cursor-pointer text-zinc-200 text-sm">
+              <label className="inline-flex items-center gap-2 cursor-pointer text-text text-sm">
                 <input
                   type="checkbox"
                   checked={filterState.filterSuspicious}
                   onChange={(e) =>
                     updateFilter("filterSuspicious", e.target.checked)
                   }
-                  className="w-4 h-4 rounded border-zinc-500"
+                  className="w-4 h-4 rounded border-border-muted"
                 />
                 Hide suspicious
               </label>
@@ -125,7 +125,7 @@ export function FiltersPanel({
           </div>
 
           <div className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500 block mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-text-dim block mb-2">
               Minimums
             </span>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
@@ -141,7 +141,7 @@ export function FiltersPanel({
               ).map(([key, label]) => (
                 <label
                   key={key}
-                  className="flex flex-col gap-1 text-zinc-400 text-sm"
+                  className="flex flex-col gap-1 text-text-muted text-sm"
                 >
                   <span>{label}</span>
                   <input
@@ -151,7 +151,7 @@ export function FiltersPanel({
                       updateFilter(key, parseNum(e.target.value))
                     }
                     placeholder="—"
-                    className="max-w-[120px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
+                    className="max-w-[120px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
                   />
                 </label>
               ))}
@@ -159,7 +159,7 @@ export function FiltersPanel({
           </div>
 
           <div className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500 block mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-text-dim block mb-2">
               Maximums
             </span>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
@@ -172,7 +172,7 @@ export function FiltersPanel({
               ).map(([key, label]) => (
                 <label
                   key={key}
-                  className="flex flex-col gap-1 text-zinc-400 text-sm"
+                  className="flex flex-col gap-1 text-text-muted text-sm"
                 >
                   <span>{label}</span>
                   <input
@@ -185,7 +185,7 @@ export function FiltersPanel({
                       )
                     }
                     placeholder="—"
-                    className="max-w-[120px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
+                    className="max-w-[120px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
                   />
                 </label>
               ))}
@@ -196,13 +196,13 @@ export function FiltersPanel({
             <button
               type="button"
               onClick={() => setShowThresholds((v) => !v)}
-              className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 text-zinc-200 rounded text-left text-sm hover:bg-zinc-600"
+              className="w-full px-3 py-2 bg-input-bg border border-input-border text-text rounded text-left text-sm hover:bg-surface-hover"
             >
               Detection thresholds (suspicious highlight){" "}
               {showThresholds ? "▲" : "▼"}
             </button>
             {showThresholds && (
-              <div className="mt-2 pt-3 border-t border-zinc-600 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
+              <div className="mt-2 pt-3 border-t border-border grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 gap-y-3">
                 {(
                   [
                     ["volumeChangeMin", "volumeChangeMax", "Volume change %"],
@@ -215,7 +215,7 @@ export function FiltersPanel({
                 ).map(([keyA, keyB, label]) => (
                   <label
                     key={String(keyA)}
-                    className="flex flex-col gap-1 text-zinc-400 text-sm"
+                    className="flex flex-col gap-1 text-text-muted text-sm"
                   >
                     <span>{label}</span>
                     <div className="flex gap-2">
@@ -228,7 +228,7 @@ export function FiltersPanel({
                         step={
                           keyA.includes("Liq") || keyA.includes("Mc") ? 0.01 : 1
                         }
-                        className="max-w-[70px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
+                        className="max-w-[70px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
                       />
                       {keyB && (
                         <input
@@ -237,7 +237,7 @@ export function FiltersPanel({
                           onChange={(e) =>
                             updateThreshold(keyB, parseNum(e.target.value))
                           }
-                          className="max-w-[70px] px-2 py-1.5 bg-zinc-700 border border-zinc-600 rounded text-zinc-200 text-sm focus:outline-none focus:border-blue-500"
+                          className="max-w-[70px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
                         />
                       )}
                     </div>

@@ -1,5 +1,26 @@
 export type PriceChangeTimeframe = "m5" | "h1" | "h6" | "24h";
 
+export type ExplorerType = "gmgn" | "birdeye" | "dexscreener";
+
+export const EXPLORER_OPTIONS: { value: ExplorerType; label: string }[] = [
+  { value: "gmgn", label: "GMGN" },
+  { value: "birdeye", label: "Birdeye" },
+  { value: "dexscreener", label: "DexScreener" },
+];
+
+const EXPLORER_BASE_URL: Record<ExplorerType, string> = {
+  gmgn: "https://gmgn.ai/sol/token/",
+  birdeye: "https://birdeye.so/solana/token/",
+  dexscreener: "https://dexscreener.com/solana/",
+};
+
+export function getExplorerTokenUrl(
+  explorer: ExplorerType,
+  address: string
+): string {
+  return `${EXPLORER_BASE_URL[explorer]}${address}`;
+}
+
 export interface Token {
   address: string;
   symbol: string;

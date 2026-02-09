@@ -6,10 +6,11 @@ import type {
   FilterState,
   ThresholdState,
   PriceChangeTimeframe,
+  ExplorerType,
 } from "@/types/token";
+import { getExplorerTokenUrl } from "@/types/token";
 import { formatNumber, formatPercent, formatRatio } from "@/lib/format";
 
-const GMGN_BASE = "https://gmgn.ai/sol/token/";
 const BUBBLEMAPS_BASE = "https://app.bubblemaps.io/sol/token/";
 
 export type SortKey =
@@ -122,6 +123,7 @@ export interface TokenTableProps {
   priceChangeTimeframe: PriceChangeTimeframe;
   onPriceChangeTimeframeChange: (tf: PriceChangeTimeframe) => void;
   onVisibleCountChange?: (n: number) => void;
+  explorer: ExplorerType;
 }
 
 export function TokenTable({
@@ -138,6 +140,7 @@ export function TokenTable({
   priceChangeTimeframe,
   onPriceChangeTimeframeChange,
   onVisibleCountChange,
+  explorer,
 }: TokenTableProps) {
   const [copied, setCopied] = useState<string | null>(null);
   const selectAllRef = useRef<HTMLInputElement>(null);
@@ -155,7 +158,8 @@ export function TokenTable({
       if (
         q &&
         !token.symbol.toLowerCase().includes(q) &&
-        !token.name.toLowerCase().includes(q)
+        !token.name.toLowerCase().includes(q) &&
+        !token.address.toLowerCase().includes(q)
       )
         return false;
       return true;
@@ -367,7 +371,7 @@ export function TokenTable({
                 <td className="px-2 py-2 border border-border whitespace-nowrap overflow-hidden text-ellipsis">
                   <span className="flex items-center gap-1">
                     <a
-                      href={`${GMGN_BASE}${token.address}`}
+                      href={getExplorerTokenUrl(explorer, token.address)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-link hover:underline truncate"
@@ -389,7 +393,7 @@ export function TokenTable({
                 </td>
                 <td className="px-2 py-2 border border-border overflow-hidden text-ellipsis">
                   <a
-                    href={`${GMGN_BASE}${token.address}`}
+                    href={getExplorerTokenUrl(explorer, token.address)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-link hover:underline truncate block"

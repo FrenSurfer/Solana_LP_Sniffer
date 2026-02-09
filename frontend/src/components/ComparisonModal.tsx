@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { Token } from "@/types/token";
+import type { Token, ExplorerType } from "@/types/token";
+import { getExplorerTokenUrl } from "@/types/token";
 import { formatNumber, formatRatio } from "@/lib/format";
 
 interface ComparisonModalProps {
   tokens: Token[];
+  explorer: ExplorerType;
   onClose: () => void;
 }
 
@@ -53,7 +55,11 @@ const metricRows: {
   },
 ];
 
-export function ComparisonModal({ tokens, onClose }: ComparisonModalProps) {
+export function ComparisonModal({
+  tokens,
+  explorer,
+  onClose,
+}: ComparisonModalProps) {
   const [visibleMetrics, setVisibleMetrics] = useState<Set<string>>(
     new Set(metricRows.map((m) => m.key))
   );
@@ -114,7 +120,14 @@ export function ComparisonModal({ tokens, onClose }: ComparisonModalProps) {
                     key={t.address}
                     className="text-right py-2 px-2 font-semibold text-text"
                   >
-                    {t.symbol}
+                    <a
+                      href={getExplorerTokenUrl(explorer, t.address)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-link hover:underline"
+                    >
+                      {t.symbol}
+                    </a>
                   </th>
                 ))}
               </tr>

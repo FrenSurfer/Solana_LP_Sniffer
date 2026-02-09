@@ -5,9 +5,11 @@ import type { Token } from "@/types/token";
 import {
   defaultFilters,
   defaultThresholds,
+  EXPLORER_OPTIONS,
   type FilterState,
   type ThresholdState,
   type PriceChangeTimeframe,
+  type ExplorerType,
 } from "@/types/token";
 import { fetchTokens, refreshCache, compareTokens } from "@/lib/api";
 import { FiltersPanel } from "@/components/FiltersPanel";
@@ -36,6 +38,7 @@ export default function Home() {
     null
   );
   const [compareLoading, setCompareLoading] = useState(false);
+  const [explorer, setExplorer] = useState<ExplorerType>("gmgn");
 
   const loadTokens = useCallback(async () => {
     setError(null);
@@ -205,6 +208,23 @@ export default function Home() {
           <span className="text-sm text-text-dim">
             ({selectedCount} selected)
           </span>
+          <span className="flex items-center gap-2 text-sm">
+            <label htmlFor="explorer-select" className="text-text-dim">
+              Explorer:
+            </label>
+            <select
+              id="explorer-select"
+              value={explorer}
+              onChange={(e) => setExplorer(e.target.value as ExplorerType)}
+              className="px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring cursor-pointer"
+            >
+              {EXPLORER_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </span>
         </div>
 
         <TokenTable
@@ -221,12 +241,14 @@ export default function Home() {
           priceChangeTimeframe={priceChangeTimeframe}
           onPriceChangeTimeframeChange={handlePriceChangeTimeframeChange}
           onVisibleCountChange={setVisibleCount}
+          explorer={explorer}
         />
       </div>
 
       {compareModalTokens && (
         <ComparisonModal
           tokens={compareModalTokens}
+          explorer={explorer}
           onClose={() => setCompareModalTokens(null)}
         />
       )}

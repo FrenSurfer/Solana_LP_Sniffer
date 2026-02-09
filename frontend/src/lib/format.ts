@@ -10,5 +10,5 @@ export function formatPercent(n: number): string {
 }
 
 export function formatRatio(n: number): string {
-  return n.toFixed(2);
+  return n.toFixed(4);
 }

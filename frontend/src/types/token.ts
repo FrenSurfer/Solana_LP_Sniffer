@@ -1,3 +1,5 @@
+export type PriceChangeTimeframe = "m5" | "h1" | "h6" | "24h";
+
 export interface Token {
   address: string;
   symbol: string;
@@ -5,6 +7,9 @@ export interface Token {
   volume: number;
   liquidity: number;
   mc: number;
+  price_change_m5: number;
+  price_change_h1: number;
+  price_change_h6: number;
   price_change_24h: number;
   v24hChangePercent: number;
   volume_liquidity_ratio: number;
@@ -21,7 +26,6 @@ export interface FilterState {
   mcapMax: number;
   filterSuspicious: boolean;
   filter24h: boolean;
-  minWallets24h: number;
   minVolumeChange: number;
   maxVolumeChange: number;
   minPriceChange: number;
@@ -35,7 +39,6 @@ export const defaultFilters: FilterState = {
   mcapMax: 0,
   filterSuspicious: false,
   filter24h: true,
-  minWallets24h: 0,
   minVolumeChange: 0,
   maxVolumeChange: 0,
   minPriceChange: 0,
@@ -50,16 +53,14 @@ export interface ThresholdState {
   volLiqThreshold: number;
   volMcThreshold: number;
   liqMcThreshold: number;
-  wallets24hThreshold: number;
 }
 
 export const defaultThresholds: ThresholdState = {
   volumeChangeMin: -50,
-  volumeChangeMax: 100,
+  volumeChangeMax: 200,
   priceChangeMin: -50,
-  priceChangeMax: 100,
+  priceChangeMax: 200,
   volLiqThreshold: 5,
   volMcThreshold: 3,
-  liqMcThreshold: 0.05,
-  wallets24hThreshold: 100,
+  liqMcThreshold: 0.01,
 };

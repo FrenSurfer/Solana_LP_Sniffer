@@ -6,16 +6,35 @@ import type { BirdeyeToken, BirdeyeTokenListResponse } from "./types.js";
 const BASE_URL = "https://public-api.birdeye.so";
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 min
 const RATE_LIMIT = 1000;
-const MIN_REQUEST_INTERVAL = 0.06;
-const BATCH_SIZE = 30;
+const BATCH_SIZE = 50; // 20 requests for 1000 tokens
+const DELAY_BETWEEN_BATCHES_MS = 1200; // ~1 req/s to stay under Birdeye rate limit (429)
 
 async function retryRequest<T>(
   fn: () => Promise<T>,
-  retries = 3
+  retries = 4
 ): Promise<T | null> {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      return await fn();
+      const result = await fn();
+      // If result is a Response and 429, treat as retryable
+      if (
+        result &&
+        typeof result === "object" &&
+        "status" in result &&
+        (result as Response).status === 429
+      ) {
+        const res = result as Response;
+        const wait =
+          Number(res.headers.get("retry-after")) || 2 * Math.pow(2, attempt);
+        console.warn(
+          `Rate limit (429), retrying in ${wait}s (attempt ${
+            attempt + 1
+          }/${retries})...`
+        );
+        await new Promise((r) => setTimeout(r, wait * 1000));
+        continue;
+      }
+      return result as T;
     } catch (e) {
       const wait = 0.3 * Math.pow(2, attempt);
       console.warn(
@@ -78,7 +97,14 @@ export class BirdeyeAPIClient {
     );
 
     if (!res || !res.ok) {
-      return { success: false, error: "Failed after retries" };
+      const error =
+        res?.status === 429
+          ? "Rate limit (429)"
+          : res?.status
+          ? `HTTP ${res.status}`
+          : "Failed after retries";
+      console.warn(`Birdeye request failed: ${error}`);
+      return { success: false, error };
     }
     return (await res.json()) as BirdeyeTokenListResponse;
   }
@@ -93,11 +119,21 @@ export class BirdeyeAPIClient {
     if (!existsSync(path)) return null;
     try {
       const raw = await readFile(path, "utf-8");
+      if (!raw || !raw.trim()) {
+        console.warn("Cache file empty, skipping");
+        return null;
+      }
       const data = JSON.parse(raw) as {
-        tokens: BirdeyeToken[];
-        cache_timestamp: string;
+        tokens?: BirdeyeToken[];
+        cache_timestamp?: string;
       };
-      const ts = new Date(data.cache_timestamp).getTime();
+      if (!Array.isArray(data.tokens) || data.tokens.length === 0) {
+        console.warn("Cache invalid (no tokens array), skipping");
+        return null;
+      }
+      const ts = data.cache_timestamp
+        ? new Date(data.cache_timestamp).getTime()
+        : 0;
       if (Date.now() - ts > CACHE_DURATION_MS) {
         console.info("Cache expired");
         return null;
@@ -126,7 +162,7 @@ export class BirdeyeAPIClient {
   }
 
   async getAllTokens(
-    totalDesired = 500,
+    totalDesired = 1000,
     useCache = true
   ): Promise<BirdeyeToken[]> {
     if (useCache) {
@@ -141,14 +177,19 @@ export class BirdeyeAPIClient {
       console.info(`Fetching tokens ${offset} to ${offset + BATCH_SIZE}...`);
       const response = await this.getTokenList(offset, BATCH_SIZE);
 
-      if (!response.success || !response.data?.tokens?.length) break;
+      if (!response.success) {
+        if (allTokens.length === 0)
+          console.error("Birdeye API error:", response.error);
+        break;
+      }
+      if (!response.data?.tokens?.length) break;
 
       allTokens.push(...response.data.tokens);
       if (allTokens.length >= totalDesired) {
         allTokens.length = totalDesired;
         break;
       }
-      await new Promise((r) => setTimeout(r, 1000)); // ~60 rpm
+      await new Promise((r) => setTimeout(r, DELAY_BETWEEN_BATCHES_MS));
     }
 
     const duration = (Date.now() - start) / 1000;

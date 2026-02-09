@@ -16,6 +16,9 @@ export interface ProcessedToken {
   volume: number;
   liquidity: number;
   mc: number;
+  price_change_m5: number;
+  price_change_h1: number;
+  price_change_h6: number;
   price_change_24h: number;
   v24hChangePercent: number;
   volume_liquidity_ratio: number;

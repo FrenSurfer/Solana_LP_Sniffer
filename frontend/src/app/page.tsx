@@ -7,6 +7,7 @@ import {
   defaultThresholds,
   type FilterState,
   type ThresholdState,
+  type PriceChangeTimeframe,
 } from "@/types/token";
 import { fetchTokens, refreshCache, compareTokens } from "@/lib/api";
 import { FiltersPanel } from "@/components/FiltersPanel";
@@ -29,6 +30,8 @@ export default function Home() {
   );
   const [sortBy, setSortBy] = useState<SortKey>("volume");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [priceChangeTimeframe, setPriceChangeTimeframe] =
+    useState<PriceChangeTimeframe>("24h");
   const [compareModalTokens, setCompareModalTokens] = useState<Token[] | null>(
     null
   );
@@ -38,7 +41,14 @@ export default function Home() {
     setError(null);
     try {
       const data = await fetchTokens();
-      setTokens(data);
+      // Deduplicate by address (one row per token)
+      const seen = new Set<string>();
+      const deduped = data.filter((t) => {
+        if (seen.has(t.address)) return false;
+        seen.add(t.address);
+        return true;
+      });
+      setTokens(deduped);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load tokens");
     } finally {
@@ -62,18 +72,32 @@ export default function Home() {
     }
   }, [loadTokens]);
 
+  const PRICE_TF_TO_SORT_KEY: Record<PriceChangeTimeframe, SortKey> = {
+    m5: "price_change_m5",
+    h1: "price_change_h1",
+    h6: "price_change_h6",
+    "24h": "price_change_24h",
+  };
+
   const handleSort = useCallback(
     (key: SortKey) => {
       if (sortBy === key) {
-        // Même colonne : on alterne desc → asc → desc
         setSortOrder((o) => (o === "asc" ? "desc" : "asc"));
       } else {
-        // Nouvelle colonne : on trie par défaut en décroissant
         setSortBy(key);
         setSortOrder("desc");
       }
     },
     [sortBy]
+  );
+
+  const handlePriceChangeTimeframeChange = useCallback(
+    (tf: PriceChangeTimeframe) => {
+      setPriceChangeTimeframe(tf);
+      setSortBy(PRICE_TF_TO_SORT_KEY[tf]);
+      setSortOrder("desc");
+    },
+    []
   );
 
   const handleToggleSelect = useCallback((address: string) => {
@@ -194,6 +218,8 @@ export default function Home() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onSort={handleSort}
+          priceChangeTimeframe={priceChangeTimeframe}
+          onPriceChangeTimeframeChange={handlePriceChangeTimeframeChange}
           onVisibleCountChange={setVisibleCount}
         />
       </div>

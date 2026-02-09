@@ -2,7 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { BirdeyeAPIClient } from "./birdeye.js";
-import { getPriceChange24hByAddress } from "./dexscreener.js";
+import { getPriceChangeAndLiquidityByAddress } from "./dexscreener.js";
 import { processTokenList } from "./dataProcessor.js";
 import type { ProcessedToken } from "./types.js";
 
@@ -15,31 +15,58 @@ const client = new BirdeyeAPIClient(apiKey);
 let tokenData: ProcessedToken[] = [];
 
 async function fetchTokenData(forceRefresh = false): Promise<void> {
-  const tokens = await client.getAllTokens(500, !forceRefresh);
+  const tokens = await client.getAllTokens(1000, !forceRefresh);
   if (!tokens.length) {
     console.error("No tokens from API");
     return;
   }
   tokenData = processTokenList(tokens);
 
-  // Enrich with 24h price change from DexScreener (Birdeye free tier often doesn't provide it)
+  // Deduplicate by address (Birdeye can return same token across pages)
+  const seen = new Set<string>();
+  tokenData = tokenData.filter((t) => {
+    if (seen.has(t.address)) return false;
+    seen.add(t.address);
+    return true;
+  });
+
+  // Enrich with price change (m5, h1, h6, h24) and liquidity from DexScreener
   try {
     const addresses = tokenData.map((t) => t.address);
-    const priceChangeMap = await getPriceChange24hByAddress(addresses);
-    let enriched = 0;
+    const { priceChange: priceChangeMap, liquidity: liquidityMap } =
+      await getPriceChangeAndLiquidityByAddress(addresses);
+    let enrichedPc = 0;
+    let enrichedLiq = 0;
     for (const t of tokenData) {
       const pc = priceChangeMap.get(t.address);
-      if (pc != null && Number.isFinite(pc)) {
-        t.price_change_24h = pc;
-        enriched++;
+      if (pc) {
+        if (pc.m5 != null && Number.isFinite(pc.m5)) t.price_change_m5 = pc.m5;
+        if (pc.h1 != null && Number.isFinite(pc.h1)) t.price_change_h1 = pc.h1;
+        if (pc.h6 != null && Number.isFinite(pc.h6)) t.price_change_h6 = pc.h6;
+        if (pc.h24 != null && Number.isFinite(pc.h24))
+          t.price_change_24h = pc.h24;
+        enrichedPc++;
+      }
+      const liq = liquidityMap.get(t.address);
+      if (liq != null && Number.isFinite(liq) && liq >= 0) {
+        t.liquidity = liq;
+        enrichedLiq++;
+        const vol = t.volume ?? 0;
+        const mc = t.mc ?? 0;
+        t.volume_liquidity_ratio = t.liquidity > 0 ? vol / t.liquidity : 0;
+        t.liquidity_mc_ratio = mc > 0 ? t.liquidity / mc : 0;
+        t.performance =
+          t.volume_liquidity_ratio * 0.4 +
+          t.volume_mc_ratio * 0.4 +
+          t.liquidity_mc_ratio * 0.2;
       }
     }
     console.info(
-      `DexScreener: enriched ${enriched}/${tokenData.length} tokens with 24h price change`
+      `DexScreener: enriched ${enrichedPc}/${tokenData.length} with price change, ${enrichedLiq}/${tokenData.length} with liquidity`
     );
   } catch (e) {
     console.warn(
-      "DexScreener enrichment failed (24h price change may be 0):",
+      "DexScreener enrichment failed (price change/liquidity may be fallback):",
       e
     );
   }

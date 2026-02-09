@@ -2,7 +2,11 @@
 
 import { useCallback, useState, useEffect, useRef } from "react";
 import type { Token } from "@/types/token";
-import type { FilterState, ThresholdState } from "@/types/token";
+import type {
+  FilterState,
+  ThresholdState,
+  PriceChangeTimeframe,
+} from "@/types/token";
 import { formatNumber, formatPercent, formatRatio } from "@/lib/format";
 
 const GMGN_BASE = "https://gmgn.ai/sol/token/";
@@ -14,6 +18,9 @@ export type SortKey =
   | "liquidity"
   | "volume"
   | "mc"
+  | "price_change_m5"
+  | "price_change_h1"
+  | "price_change_h6"
   | "price_change_24h"
   | "v24hChangePercent"
   | "volume_liquidity_ratio"
@@ -36,9 +43,21 @@ function isSuspicious(
   };
 }
 
+function getPriceChangeForTimeframe(
+  token: Token,
+  tf: PriceChangeTimeframe
+): number {
+  if (tf === "24h") return token.price_change_24h;
+  if (tf === "m5") return token.price_change_m5;
+  if (tf === "h1") return token.price_change_h1;
+  if (tf === "h6") return token.price_change_h6;
+  return token.price_change_24h;
+}
+
 function filterToken(
   token: Token,
   filters: FilterState,
+  priceChangeValue: number,
   suspicious: {
     volCh: boolean;
     volLiq: boolean;
@@ -68,12 +87,26 @@ function filterToken(
     token.v24hChangePercent > filters.maxVolumeChange
   )
     return false;
-  if (filters.minPriceChange && token.price_change_24h < filters.minPriceChange)
+  if (filters.minPriceChange && priceChangeValue < filters.minPriceChange)
     return false;
-  if (filters.maxPriceChange && token.price_change_24h > filters.maxPriceChange)
+  if (filters.maxPriceChange && priceChangeValue > filters.maxPriceChange)
     return false;
   return true;
 }
+
+const PRICE_TF_SORT_KEY: Record<PriceChangeTimeframe, SortKey> = {
+  m5: "price_change_m5",
+  h1: "price_change_h1",
+  h6: "price_change_h6",
+  "24h": "price_change_24h",
+};
+
+const PRICE_TF_LABEL: Record<PriceChangeTimeframe, string> = {
+  m5: "5m",
+  h1: "1h",
+  h6: "6h",
+  "24h": "24h",
+};
 
 export interface TokenTableProps {
   tokens: Token[];
@@ -86,6 +119,8 @@ export interface TokenTableProps {
   sortBy: SortKey;
   sortOrder: "asc" | "desc";
   onSort: (key: SortKey) => void;
+  priceChangeTimeframe: PriceChangeTimeframe;
+  onPriceChangeTimeframeChange: (tf: PriceChangeTimeframe) => void;
   onVisibleCountChange?: (n: number) => void;
 }
 
@@ -100,6 +135,8 @@ export function TokenTable({
   sortBy,
   sortOrder,
   onSort,
+  priceChangeTimeframe,
+  onPriceChangeTimeframeChange,
   onVisibleCountChange,
 }: TokenTableProps) {
   const [copied, setCopied] = useState<string | null>(null);
@@ -109,7 +146,12 @@ export function TokenTable({
     const q = searchQuery.toLowerCase();
     return tokens.filter((token) => {
       const suspicious = isSuspicious(token, thresholdState);
-      if (!filterToken(token, filterState, suspicious)) return false;
+      const priceChangeValue = getPriceChangeForTimeframe(
+        token,
+        priceChangeTimeframe
+      );
+      if (!filterToken(token, filterState, priceChangeValue, suspicious))
+        return false;
       if (
         q &&
         !token.symbol.toLowerCase().includes(q) &&
@@ -118,7 +160,13 @@ export function TokenTable({
         return false;
       return true;
     });
-  }, [tokens, filterState, thresholdState, searchQuery])();
+  }, [
+    tokens,
+    filterState,
+    thresholdState,
+    searchQuery,
+    priceChangeTimeframe,
+  ])();
 
   useEffect(() => {
     onVisibleCountChange?.(filtered.length);
@@ -219,11 +267,43 @@ export function TokenTable({
             <SortHeader col="liquidity" label="Liq. ($)" />
             <SortHeader col="volume" label="Vol. 24h ($)" />
             <SortHeader col="mc" label="MCap ($)" />
-            <SortHeader
-              col="price_change_24h"
-              label="Δ Prix 24h (%)"
-              tooltip="24h price change (DexScreener)"
-            />
+            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-right font-semibold text-text min-w-[80px]">
+              <div className="flex items-center justify-end gap-1 flex-wrap">
+                <span className="text-xs text-text shrink-0">Δ Prix</span>
+                <select
+                  value={priceChangeTimeframe}
+                  onChange={(e) =>
+                    onPriceChangeTimeframeChange(
+                      e.target.value as PriceChangeTimeframe
+                    )
+                  }
+                  className="px-1.5 py-0.5 bg-input-bg border border-input-border rounded text-text text-xs focus:outline-none focus:border-focus-ring cursor-pointer"
+                  title="Timeframe (DexScreener)"
+                >
+                  {(["m5", "h1", "h6", "24h"] as const).map((tf) => (
+                    <option key={tf} value={tf}>
+                      {PRICE_TF_LABEL[tf]}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onSort(PRICE_TF_SORT_KEY[priceChangeTimeframe])
+                  }
+                  className="flex items-center justify-end gap-0.5 hover:text-link"
+                  title="Trier par Δ Prix"
+                >
+                  <span className="opacity-50 text-xs">
+                    {sortBy === PRICE_TF_SORT_KEY[priceChangeTimeframe]
+                      ? sortOrder === "asc"
+                        ? "▲"
+                        : "▼"
+                      : "▼"}
+                  </span>
+                </button>
+              </div>
+            </th>
             <SortHeader
               col="v24hChangePercent"
               label="Δ Volume (%)"
@@ -328,14 +408,19 @@ export function TokenTable({
                 </td>
                 <td
                   className={`px-2 py-2 border border-border ${
-                    token.price_change_24h > 0
+                    getPriceChangeForTimeframe(token, priceChangeTimeframe) > 0
                       ? "text-positive"
-                      : token.price_change_24h < 0
+                      : getPriceChangeForTimeframe(
+                          token,
+                          priceChangeTimeframe
+                        ) < 0
                       ? "text-negative"
                       : "text-text-muted"
                   }`}
                 >
-                  {formatPercent(token.price_change_24h)}
+                  {formatPercent(
+                    getPriceChangeForTimeframe(token, priceChangeTimeframe)
+                  )}
                 </td>
                 <td
                   className={`px-2 py-2 border border-border ${

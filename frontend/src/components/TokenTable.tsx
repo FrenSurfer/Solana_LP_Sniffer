@@ -222,7 +222,7 @@ export function TokenTable({
       <button
         type="button"
         onClick={() => onSort(col)}
-        className="flex items-center justify-end gap-1 w-full text-right hover:text-link"
+        className="flex items-center justify-end gap-1 w-full text-right hover:text-link cursor-pointer"
         title={tooltip}
       >
         {label}
@@ -295,7 +295,7 @@ export function TokenTable({
                   onClick={() =>
                     onSort(PRICE_TF_SORT_KEY[priceChangeTimeframe])
                   }
-                  className="flex items-center justify-end gap-0.5 hover:text-link"
+                  className="flex items-center justify-end gap-0.5 hover:text-link cursor-pointer"
                   title="Trier par Δ Prix"
                 >
                   <span className="opacity-50 text-xs">
@@ -332,7 +332,7 @@ export function TokenTable({
               <button
                 type="button"
                 onClick={() => onSort("is_pump")}
-                className="flex items-center justify-center gap-1 w-full text-center hover:text-link"
+                className="flex items-center justify-center gap-1 w-full text-center hover:text-link cursor-pointer"
                 title="Address ends with 'pump'"
               >
                 Pump
@@ -381,7 +381,7 @@ export function TokenTable({
                     <button
                       type="button"
                       onClick={() => copyAddress(token.address)}
-                      className="shrink-0 px-1.5 py-0.5 text-xs border border-border rounded text-text-dim hover:text-text"
+                      className="shrink-0 px-1.5 py-0.5 text-xs border border-border rounded text-text-dim hover:text-text cursor-pointer"
                       title="Copy address"
                     >
                       ⎘

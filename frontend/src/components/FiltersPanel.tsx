@@ -152,14 +152,14 @@ export function FiltersPanel({
           <button
             type="button"
             onClick={onApply}
-            className="px-3 py-1.5 bg-button-success hover:bg-button-success-hover text-button-text text-sm rounded-md"
+            className="px-3 py-1.5 bg-button-primary hover:bg-button-primary-hover text-button-text text-sm rounded-md cursor-pointer"
           >
             Apply
           </button>
           <button
             type="button"
             onClick={resetFilters}
-            className="px-3 py-1.5 bg-button-danger hover:bg-button-danger-hover text-button-text text-sm rounded-md"
+            className="px-3 py-1.5 bg-transparent border border-border text-text text-sm rounded-md hover:bg-surface-hover cursor-pointer"
           >
             Reset
           </button>
@@ -280,7 +280,7 @@ export function FiltersPanel({
             <button
               type="button"
               onClick={() => setShowThresholds((v) => !v)}
-              className="w-full px-3 py-2 bg-input-bg border border-input-border text-text rounded text-left text-sm hover:bg-surface-hover"
+              className="w-full px-3 py-2 bg-input-bg border border-input-border text-text rounded text-left text-sm hover:bg-surface-hover cursor-pointer"
             >
               Detection thresholds (suspicious highlight){" "}
               {showThresholds ? "▲" : "▼"}

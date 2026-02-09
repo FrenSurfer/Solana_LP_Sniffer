@@ -156,7 +156,7 @@ export default function Home() {
             type="button"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg"
+            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg cursor-pointer"
           >
             {refreshing ? "Refreshing…" : "Refresh data"}
           </button>
@@ -201,7 +201,7 @@ export default function Home() {
             type="button"
             onClick={handleCompare}
             disabled={!canCompare || compareLoading}
-            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg"
+            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg cursor-pointer"
           >
             {compareLoading ? "Loading…" : "Compare selected tokens"}
           </button>

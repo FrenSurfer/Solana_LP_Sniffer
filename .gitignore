@@ -6,3 +6,5 @@ dist/
 .next/
 frontend/.next/
 backend/data/
+.vscode/
+

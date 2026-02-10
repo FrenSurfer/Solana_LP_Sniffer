@@ -68,7 +68,7 @@ function InputWithPresets({
         value={value || ""}
         onChange={(e) => onChange(parseNum(e.target.value))}
         placeholder={placeholder}
-        className="flex-1 min-w-0 px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
+        className="flex-1 min-w-0 px-2.5 py-2 bg-input-bg border border-input-border rounded-[var(--radius-sm)] text-text text-sm focus:outline-none focus:border-focus-ring transition-colors"
       />
       <select
         value=""
@@ -77,7 +77,7 @@ function InputWithPresets({
           if (v !== "") onChange(parseNum(v));
           e.target.value = "";
         }}
-        className="shrink-0 w-11 py-1.5 pl-1.5 pr-6 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring cursor-pointer appearance-none bg-[right_0.35rem_center] bg-no-repeat bg-[length:0.6rem]"
+        className="shrink-0 w-11 py-2 pl-1.5 pr-6 bg-input-bg border border-input-border rounded-[var(--radius-sm)] text-text text-sm focus:outline-none focus:border-focus-ring cursor-pointer appearance-none bg-[right_0.35rem_center] bg-no-repeat bg-[length:0.6rem] transition-colors"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a1a1aa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
         }}
@@ -123,8 +123,11 @@ export function FiltersPanel({
   }, [onFiltersChange]);
 
   return (
-    <div className="rounded-lg border border-border bg-surface-elevated mb-4 overflow-hidden">
-      <div className="w-full flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-border bg-surface-elevated hover:bg-surface-hover text-left">
+    <div
+      className="rounded-[var(--radius-lg)] border border-border bg-surface-elevated overflow-hidden"
+      style={{ boxShadow: "var(--shadow-md)" }}
+    >
+      <div className="w-full flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-border bg-surface-elevated hover:bg-surface-hover text-left transition-colors">
         <div
           role="button"
           tabIndex={0}
@@ -140,16 +143,18 @@ export function FiltersPanel({
           >
             ▼
           </span>
-          <h3 className="text-base font-semibold text-text">Filters</h3>
+          <h3 className="text-base font-semibold tracking-tight text-text">
+            Filters
+          </h3>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-sm font-semibold text-text-muted">
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="text-sm font-medium text-text-muted">
             {visibleCount} tokens
           </span>
           <button
             type="button"
             onClick={resetFilters}
-            className="px-3 py-1.5 bg-transparent border-2 border-border text-text text-sm rounded-md cursor-pointer transition-all duration-150 hover:bg-surface-hover hover:border-focus-ring hover:scale-105 active:bg-surface-muted active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated"
+            className="px-3.5 py-2 bg-transparent border-2 border-border text-text text-sm font-medium rounded-[var(--radius-md)] cursor-pointer transition-all duration-150 hover:bg-surface-hover hover:border-focus-ring hover:scale-[1.02] active:bg-surface-muted active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated"
           >
             Reset
           </button>
@@ -159,7 +164,7 @@ export function FiltersPanel({
       {isOpen && (
         <div className="p-5 pt-4">
           <div className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-text-dim block mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-text-dim block mb-2.5">
               Quick
             </span>
             <div className="flex flex-wrap gap-6 items-center">
@@ -235,7 +240,7 @@ export function FiltersPanel({
           </div>
 
           <div className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-text-dim block mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-text-dim block mb-2.5">
               Maximums
             </span>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 gap-y-3">
@@ -270,13 +275,13 @@ export function FiltersPanel({
             <button
               type="button"
               onClick={() => setShowThresholds((v) => !v)}
-              className="w-full px-3 py-2 bg-input-bg border border-input-border text-text rounded text-left text-sm hover:bg-surface-hover cursor-pointer"
+              className="w-full px-3.5 py-2.5 bg-input-bg border border-input-border text-text rounded-[var(--radius-md)] text-left text-sm font-medium hover:bg-surface-hover cursor-pointer transition-colors"
             >
               Detection thresholds (suspicious highlight){" "}
               {showThresholds ? "▲" : "▼"}
             </button>
             {showThresholds && (
-              <div className="mt-2 pt-3 border-t border-border flex flex-wrap gap-4">
+              <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-4">
                 {(
                   [
                     ["volumeChangeMin", "volumeChangeMax", "Volume change %"],
@@ -301,7 +306,7 @@ export function FiltersPanel({
                         step={
                           keyA.includes("Liq") || keyA.includes("Mc") ? 0.01 : 1
                         }
-                        className="max-w-[70px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
+                        className="max-w-[70px] px-2.5 py-2 bg-input-bg border border-input-border rounded-[var(--radius-sm)] text-text text-sm focus:outline-none focus:border-focus-ring transition-colors"
                       />
                       {keyB && (
                         <input
@@ -310,7 +315,7 @@ export function FiltersPanel({
                           onChange={(e) =>
                             updateThreshold(keyB, parseNum(e.target.value))
                           }
-                          className="max-w-[70px] px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring"
+                          className="max-w-[70px] px-2.5 py-2 bg-input-bg border border-input-border rounded-[var(--radius-sm)] text-text text-sm focus:outline-none focus:border-focus-ring transition-colors"
                         />
                       )}
                     </div>

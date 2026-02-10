@@ -148,22 +148,27 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text p-4 md:p-6">
-      <div className="max-w-[1600px] mx-auto">
-        <header className="mb-4 flex flex-wrap items-center gap-3">
-          <h1 className="text-xl font-bold text-text">Solana Token Sniffer</h1>
+    <div className="min-h-screen bg-background text-text p-5 md:p-8">
+      <div className="max-w-[1600px] mx-auto space-y-5">
+        <header className="flex flex-wrap items-center gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight text-text">
+            Solana Token Sniffer
+          </h1>
           <button
             type="button"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg cursor-pointer"
+            className="px-4 py-2.5 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm font-medium rounded-[var(--radius-md)] cursor-pointer transition-colors shadow-[var(--shadow-sm)]"
           >
             {refreshing ? "Refreshing…" : "Refresh data"}
           </button>
         </header>
 
         {error && (
-          <div className="mb-4 p-3 bg-error-bg border border-error-border rounded-lg text-error-text text-sm">
+          <div
+            className="p-4 bg-error-bg border border-error-border rounded-[var(--radius-md)] text-error-text text-sm"
+            style={{ boxShadow: "var(--shadow-sm)" }}
+          >
             {error}
           </div>
         )}
@@ -176,20 +181,20 @@ export default function Home() {
           onThresholdsChange={setThresholdState}
         />
 
-        <div className="mb-3 flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search token..."
-              className="w-48 px-3 py-2 bg-surface-elevated border border-input-border rounded-lg text-text placeholder-text-dim focus:outline-none focus:border-focus-ring"
+              className="w-52 px-3.5 py-2.5 bg-surface-elevated border border-input-border rounded-[var(--radius-md)] text-text placeholder-text-dim focus:outline-none focus:border-focus-ring text-sm transition-colors"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="p-2 text-text-dim hover:text-text"
+                className="p-2 text-text-dim hover:text-text rounded-[var(--radius-sm)] transition-colors"
                 aria-label="Clear search"
               >
                 ✕
@@ -200,7 +205,7 @@ export default function Home() {
             type="button"
             onClick={handleCompare}
             disabled={!canCompare || compareLoading}
-            className="px-4 py-2 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm rounded-lg cursor-pointer"
+            className="px-4 py-2.5 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm font-medium rounded-[var(--radius-md)] cursor-pointer transition-colors shadow-[var(--shadow-sm)]"
           >
             {compareLoading ? "Loading…" : "Compare selected tokens"}
           </button>
@@ -215,7 +220,7 @@ export default function Home() {
               id="explorer-select"
               value={explorer}
               onChange={(e) => setExplorer(e.target.value as ExplorerType)}
-              className="px-2 py-1.5 bg-input-bg border border-input-border rounded text-text text-sm focus:outline-none focus:border-focus-ring cursor-pointer"
+              className="px-3 py-2 bg-input-bg border border-input-border rounded-[var(--radius-md)] text-text text-sm focus:outline-none focus:border-focus-ring cursor-pointer"
             >
               {EXPLORER_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -234,6 +239,7 @@ export default function Home() {
           selectedAddresses={selectedAddresses}
           onToggleSelect={handleToggleSelect}
           onSelectAll={handleSelectAll}
+          onClearSelection={() => setSelectedAddresses(new Set())}
           sortBy={sortBy}
           sortOrder={sortOrder}
           onSort={handleSort}

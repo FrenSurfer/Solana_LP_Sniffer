@@ -132,22 +132,28 @@ export function ComparisonModal({
       onClick={onClose}
     >
       <div
-        className="bg-surface-elevated border border-border rounded-lg p-5 w-[90%] max-w-4xl max-h-[90vh] overflow-auto"
+        className="bg-surface-elevated border border-border rounded-[var(--radius-lg)] p-6 w-[90%] max-w-4xl max-h-[90vh] overflow-auto"
+        style={{ boxShadow: "var(--shadow-card)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-text">Token comparison</h2>
-          <div className="flex items-center gap-2">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-xl font-semibold tracking-tight text-text">
+            Token comparison
+          </h2>
+          <div className="flex items-center gap-3">
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowFiltersDropdown((v) => !v)}
-                className="px-3 py-2 bg-input-bg border border-input-border rounded text-text text-sm hover:bg-surface-hover focus:outline-none focus:border-focus-ring cursor-pointer"
+                className="px-3.5 py-2 bg-input-bg border border-input-border rounded-[var(--radius-md)] text-text text-sm font-medium hover:bg-surface-hover focus:outline-none focus:border-focus-ring cursor-pointer transition-colors"
               >
                 Metrics {showFiltersDropdown ? "▲" : "▼"}
               </button>
               {showFiltersDropdown && (
-                <div className="absolute right-0 top-full mt-1 min-w-[200px] p-2 bg-surface-elevated border border-border rounded shadow-lg z-10">
+                <div
+                  className="absolute right-0 top-full mt-1.5 min-w-[200px] p-3 bg-surface-elevated border border-border rounded-[var(--radius-md)] z-10"
+                  style={{ boxShadow: "var(--shadow-md)" }}
+                >
                   <div className="flex flex-col gap-2">
                     {metricRows.map(({ key, label }) => (
                       <label

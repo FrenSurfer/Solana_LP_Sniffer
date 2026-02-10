@@ -117,6 +117,7 @@ export interface TokenTableProps {
   selectedAddresses: Set<string>;
   onToggleSelect: (address: string) => void;
   onSelectAll: (checked: boolean, visibleAddresses: string[]) => void;
+  onClearSelection?: () => void;
   sortBy: SortKey;
   sortOrder: "asc" | "desc";
   onSort: (key: SortKey) => void;
@@ -134,6 +135,7 @@ export function TokenTable({
   selectedAddresses,
   onToggleSelect,
   onSelectAll,
+  onClearSelection,
   sortBy,
   sortOrder,
   onSort,
@@ -218,7 +220,7 @@ export function TokenTable({
     label: string;
     tooltip?: string;
   }) => (
-    <th className="sticky top-0 z-10 px-3 py-3 bg-surface-hover border border-border text-right font-semibold text-text min-w-[80px]">
+    <th className="sticky top-0 z-10 px-3 py-3.5 bg-surface-hover border-b border-border text-right font-semibold text-text min-w-[80px]">
       <button
         type="button"
         onClick={() => onSort(col)}
@@ -234,10 +236,13 @@ export function TokenTable({
   );
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
+    <div
+      className="overflow-x-auto rounded-[var(--radius-lg)] border border-border bg-surface-elevated"
+      style={{ boxShadow: "var(--shadow-card)" }}
+    >
       <table className="w-full border-collapse text-sm text-right bg-surface-elevated table-fixed">
         <colgroup>
-          <col className="w-6" />
+          <col className="w-10 min-w-10" />
           <col className="w-[9%]" />
           <col className="w-[9%]" />
           <col className="w-[8%]" />
@@ -253,7 +258,7 @@ export function TokenTable({
         </colgroup>
         <thead>
           <tr>
-            <th className="sticky top-0 z-10 px-0.5 py-3 bg-surface-hover border border-border w-6 shrink-0 min-w-6 text-center">
+            <th className="sticky top-0 z-10 px-0 py-3.5 bg-surface-hover border-b border-border w-10 shrink-0 min-w-10 relative text-center">
               <span className="flex justify-center">
                 <input
                   ref={selectAllRef}
@@ -262,16 +267,27 @@ export function TokenTable({
                   onChange={(e) =>
                     onSelectAll(e.target.checked, visibleAddresses)
                   }
-                  className="w-4 h-4 cursor-pointer"
+                  className="w-4 h-4 cursor-pointer shrink-0"
                 />
               </span>
+              {onClearSelection && selectedAddresses.size > 0 && (
+                <button
+                  type="button"
+                  onClick={onClearSelection}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-negative hover:bg-negative/10 rounded-[var(--radius-sm)] transition-colors cursor-pointer text-sm leading-none"
+                  title="Clear selection"
+                  aria-label="Clear selection"
+                >
+                  ×
+                </button>
+              )}
             </th>
             <SortHeader col="symbol" label="Symbol" />
             <SortHeader col="name" label="Name" />
             <SortHeader col="liquidity" label="Liq. ($)" />
             <SortHeader col="volume" label="Vol. 24h ($)" />
             <SortHeader col="mc" label="MCap ($)" />
-            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-right font-semibold text-text min-w-[80px]">
+            <th className="sticky top-0 z-10 px-2 py-3.5 bg-surface-hover border-b border-border text-right font-semibold text-text min-w-[80px]">
               <div className="flex items-center justify-end gap-1 flex-wrap">
                 <span className="text-xs text-text shrink-0">Δ Prix</span>
                 <select
@@ -281,7 +297,7 @@ export function TokenTable({
                       e.target.value as PriceChangeTimeframe
                     )
                   }
-                  className="px-1.5 py-0.5 bg-input-bg border border-input-border rounded text-text text-xs focus:outline-none focus:border-focus-ring cursor-pointer"
+                  className="px-2 py-1 bg-input-bg border border-input-border rounded-[var(--radius-sm)] text-text text-xs focus:outline-none focus:border-focus-ring cursor-pointer"
                   title="Timeframe (DexScreener)"
                 >
                   {(["m5", "h1", "h6", "24h"] as const).map((tf) => (
@@ -328,7 +344,7 @@ export function TokenTable({
               label="Liq/MC"
               tooltip="Liquidity / Market Cap"
             />
-            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-center font-semibold text-text w-10 shrink-0 min-w-10">
+            <th className="sticky top-0 z-10 px-2 py-3.5 bg-surface-hover border-b border-border text-center font-semibold text-text w-10 shrink-0 min-w-10">
               <button
                 type="button"
                 onClick={() => onSort("is_pump")}
@@ -345,7 +361,7 @@ export function TokenTable({
                 </span>
               </button>
             </th>
-            <th className="sticky top-0 z-10 px-2 py-3 bg-surface-hover border border-border text-center font-semibold text-text w-16 shrink-0">
+            <th className="sticky top-0 z-10 px-2 py-3.5 bg-surface-hover border-b border-border text-center font-semibold text-text w-16 shrink-0">
               Bubblemaps
             </th>
           </tr>
@@ -358,7 +374,7 @@ export function TokenTable({
                 key={token.address}
                 className="border-b border-border hover:bg-surface-hover even:bg-surface-elevated/50"
               >
-                <td className="px-0.5 py-2 border border-border w-6 shrink-0 min-w-6 text-center">
+                <td className="px-0 py-2 border border-border w-10 shrink-0 min-w-10 text-center">
                   <span className="flex justify-center">
                     <input
                       type="checkbox"

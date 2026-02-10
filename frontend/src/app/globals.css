@@ -52,6 +52,9 @@
   --error-border: #b91c1c;
   --error-text: #fca5a5;
 
+  /* Largeur minimale de la page (scroll horizontal en dessous) */
+  --page-min-width: 1100px;
+
   /* Premium / trading app: radius & shadows */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -106,9 +109,14 @@
   --shadow-card: var(--shadow-card);
 }
 
+html {
+  min-width: var(--page-min-width);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   letter-spacing: 0.01em;
+  min-width: var(--page-min-width);
 }

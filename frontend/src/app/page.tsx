@@ -149,7 +149,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-text p-5 md:p-8">
-      <div className="max-w-[1600px] mx-auto space-y-5">
+      <div className="max-w-[1600px] mx-auto space-y-5 min-w-[var(--page-min-width)]">
         <header className="flex flex-wrap items-center gap-4">
           <h1 className="text-2xl font-semibold tracking-tight text-text">
             Solana Token Sniffer

@@ -237,22 +237,22 @@ export function TokenTable({
 
   return (
     <div
-      className="overflow-x-auto rounded-[var(--radius-lg)] border border-border bg-surface-elevated"
+      className="rounded-[var(--radius-lg)] border border-border bg-surface-elevated"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
-      <table className="w-full border-collapse text-sm text-right bg-surface-elevated table-fixed">
+      <table className="w-full min-w-[1100px] border-collapse text-sm text-right bg-surface-elevated table-fixed">
         <colgroup>
           <col className="w-10 min-w-10" />
+          <col className="w-[7%]" />
           <col className="w-[9%]" />
+          <col className="w-[8%]" />
+          <col className="w-[10%]" />
           <col className="w-[9%]" />
           <col className="w-[8%]" />
           <col className="w-[8%]" />
-          <col className="w-[7%]" />
-          <col className="w-[8%]" />
-          <col className="w-[8%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
-          <col className="w-[8%] min-w-[4.5rem]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%] min-w-[4rem]" />
           <col className="w-10" />
           <col className="w-16" />
         </colgroup>

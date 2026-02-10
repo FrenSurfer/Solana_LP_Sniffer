@@ -11,7 +11,7 @@ import {
   type PriceChangeTimeframe,
   type ExplorerType,
 } from "@/types/token";
-import { fetchTokens, refreshCache, compareTokens } from "@/lib/api";
+import { fetchTokens, compareTokens } from "@/lib/api";
 import { FiltersPanel } from "@/components/FiltersPanel";
 import { TokenTable } from "@/components/TokenTable";
 import { ComparisonModal } from "@/components/ComparisonModal";
@@ -63,16 +63,16 @@ export default function Home() {
     loadTokens();
   }, [loadTokens]);
 
-  const handleRefresh = useCallback(async () => {
+  useEffect(() => {
+    const interval = setInterval(loadTokens, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [loadTokens]);
+
+  const handleLoadFromCache = useCallback(async () => {
     setRefreshing(true);
     setError(null);
-    const result = await refreshCache();
+    await loadTokens();
     setRefreshing(false);
-    if (result.success) {
-      await loadTokens();
-    } else {
-      setError(result.error ?? "Refresh failed");
-    }
   }, [loadTokens]);
 
   const PRICE_TF_TO_SORT_KEY: Record<PriceChangeTimeframe, SortKey> = {
@@ -156,7 +156,7 @@ export default function Home() {
           </h1>
           <button
             type="button"
-            onClick={handleRefresh}
+            onClick={handleLoadFromCache}
             disabled={refreshing}
             className="px-4 py-2.5 bg-button-primary hover:bg-button-primary-hover disabled:bg-input-disabled disabled:cursor-not-allowed text-button-text text-sm font-medium rounded-[var(--radius-md)] cursor-pointer transition-colors shadow-[var(--shadow-sm)]"
           >

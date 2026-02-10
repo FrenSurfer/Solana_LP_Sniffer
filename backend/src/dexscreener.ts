@@ -86,21 +86,14 @@ export interface PriceChangeByTimeframe {
   h24?: number;
 }
 
-export interface DexEnrichment {
-  priceChange: Map<string, PriceChangeByTimeframe>;
-  /** Liquidity per token: sum of liquidity.usd across all pairs containing that token. */
-  liquidity: Map<string, number>;
-}
-
 /**
- * For each token address: validated price change (from the pair with highest liquidity) and total liquidity (sum of all pools).
- * Only finite numbers are returned; API strings are parsed and invalid data is discarded.
+ * For each token: price change (m5, h1, h6, h24) from the pair with highest liquidity.
+ * Volume and liquidity are not returned; use Birdeye for those (single source of truth).
  */
-export async function getPriceChangeAndLiquidityByAddress(
+export async function getPriceChangeByAddress(
   addresses: string[]
-): Promise<DexEnrichment> {
+): Promise<Map<string, PriceChangeByTimeframe>> {
   const priceChange = new Map<string, PriceChangeByTimeframe>();
-  const liquiditySum = new Map<string, number>();
 
   for (let i = 0; i < addresses.length; i += BATCH_SIZE) {
     const batch = addresses.slice(i, i + BATCH_SIZE);
@@ -115,10 +108,6 @@ export async function getPriceChangeAndLiquidityByAddress(
         typeof p.baseToken?.address === "string" ? p.baseToken.address : "";
       const quoteAddr =
         typeof p.quoteToken?.address === "string" ? p.quoteToken.address : "";
-      for (const addr of [baseAddr, quoteAddr]) {
-        if (!addr) continue;
-        liquiditySum.set(addr, (liquiditySum.get(addr) ?? 0) + liq);
-      }
       const pc = normalizePriceChange(p.priceChange);
       if (!pc) continue;
       for (const addr of [baseAddr, quoteAddr]) {
@@ -133,15 +122,5 @@ export async function getPriceChangeAndLiquidityByAddress(
     }
   }
 
-  return { priceChange, liquidity: liquiditySum };
-}
-
-/**
- * @deprecated Use getPriceChangeAndLiquidityByAddress for liquidity too.
- */
-export async function getPriceChangeByAddress(
-  addresses: string[]
-): Promise<Map<string, PriceChangeByTimeframe>> {
-  const { priceChange } = await getPriceChangeAndLiquidityByAddress(addresses);
   return priceChange;
 }

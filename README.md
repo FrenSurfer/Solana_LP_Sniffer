@@ -1,6 +1,6 @@
 # Solana Token Sniffer
 
-A web tool **(local only for now)** to browse and filter **Solana tokens**. Data comes from **Birdeye** (token list, volume, market cap) and **DexScreener** (price change, liquidity). Table links open the chosen explorer (GMGN, Birdeye, or DexScreener) and Bubblemaps.
+A web tool **(local only for now)** to browse and filter **Solana tokens**. Data comes from **Birdeye** (token list, volume 24h, liquidity, market cap) and **DexScreener** (price change only). Table links open the chosen explorer (GMGN, Birdeye, or DexScreener) and Bubblemaps.
 
 ## Stack
 
@@ -9,8 +9,8 @@ A web tool **(local only for now)** to browse and filter **Solana tokens**. Data
 
 ## Data sources
 
-- **Birdeye** (API key required): token list, volume 24h, market cap, volume change %. Cached 30 min.
-- **DexScreener** (free API): price change (5m, 1h, 6h, 24h) and **liquidity** (sum of all pools per token). Used to enrich the list and override liquidity.
+- **Birdeye** (API key required): token list, **volume 24h**, **liquidity**, market cap, volume change %. Single source for vol/liq so values stay consistent. Cached 30 min.
+- **DexScreener** (free API): **price change only** (5m, 1h, 6h, 24h). Used to enrich the list.
 
 ## Features
 
@@ -79,6 +79,5 @@ in `frontend/.env.local`.
 ## Notes
 
 - **Refresh**: “Refresh data” bypasses cache and refetches from Birdeye + DexScreener.
-- **Liquidity** is from DexScreener (sum of all pools); volume and MC from Birdeye.
+- **Volume 24h** and **liquidity** are from Birdeye only (single source for consistency across sites).
 - **Ratios**: Vol/Liq = volume 24h ($) / liquidity ($); Vol/MC and Liq/MC same idea. Displayed with 4 decimals.
-- **Token security** (mint/freeze authority, top holders): Birdeye’s `token_security` endpoint exists but is not included in the free API plan, so it is not used in this app.

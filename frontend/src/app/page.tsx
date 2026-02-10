@@ -174,7 +174,6 @@ export default function Home() {
           visibleCount={visibleCount}
           onFiltersChange={setFilterState}
           onThresholdsChange={setThresholdState}
-          onApply={() => {}}
         />
 
         <div className="mb-3 flex flex-wrap items-center gap-3">

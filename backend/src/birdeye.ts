@@ -21,9 +21,9 @@ async function retryRequest<T>(
         result &&
         typeof result === "object" &&
         "status" in result &&
-        (result as Response).status === 429
+        (result as unknown as Response).status === 429
       ) {
-        const res = result as Response;
+        const res = result as unknown as Response;
         const wait =
           Number(res.headers.get("retry-after")) || 2 * Math.pow(2, attempt);
         console.warn(

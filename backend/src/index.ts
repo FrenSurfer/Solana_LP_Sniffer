@@ -2,7 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { BirdeyeAPIClient } from "./birdeye.js";
-import { getPriceChangeAndLiquidityByAddress } from "./dexscreener.js";
+import { getPriceChangeByAddress } from "./dexscreener.js";
 import { processTokenList } from "./dataProcessor.js";
 import type { ProcessedToken } from "./types.js";
 
@@ -30,13 +30,11 @@ async function fetchTokenData(forceRefresh = false): Promise<void> {
     return true;
   });
 
-  // Enrich with price change (m5, h1, h6, h24) and liquidity from DexScreener
+  // Enrich with price change (m5, h1, h6, h24) from DexScreener only. Volume & liquidity stay from Birdeye for consistency.
   try {
     const addresses = tokenData.map((t) => t.address);
-    const { priceChange: priceChangeMap, liquidity: liquidityMap } =
-      await getPriceChangeAndLiquidityByAddress(addresses);
+    const priceChangeMap = await getPriceChangeByAddress(addresses);
     let enrichedPc = 0;
-    let enrichedLiq = 0;
     for (const t of tokenData) {
       const pc = priceChangeMap.get(t.address);
       if (pc) {
@@ -47,26 +45,13 @@ async function fetchTokenData(forceRefresh = false): Promise<void> {
           t.price_change_24h = pc.h24;
         enrichedPc++;
       }
-      const liq = liquidityMap.get(t.address);
-      if (liq != null && Number.isFinite(liq) && liq >= 0) {
-        t.liquidity = liq;
-        enrichedLiq++;
-        const vol = t.volume ?? 0;
-        const mc = t.mc ?? 0;
-        t.volume_liquidity_ratio = t.liquidity > 0 ? vol / t.liquidity : 0;
-        t.liquidity_mc_ratio = mc > 0 ? t.liquidity / mc : 0;
-        t.performance =
-          t.volume_liquidity_ratio * 0.4 +
-          t.volume_mc_ratio * 0.4 +
-          t.liquidity_mc_ratio * 0.2;
-      }
     }
     console.info(
-      `DexScreener: enriched ${enrichedPc}/${tokenData.length} with price change, ${enrichedLiq}/${tokenData.length} with liquidity`
+      `DexScreener: enriched ${enrichedPc}/${tokenData.length} with price change (m5/h1/h6/24h)`
     );
   } catch (e) {
     console.warn(
-      "DexScreener enrichment failed (price change/liquidity may be fallback):",
+      "DexScreener enrichment failed (price change may be 0):",
       e
     );
   }

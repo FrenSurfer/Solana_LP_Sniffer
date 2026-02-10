@@ -10,7 +10,6 @@ interface FiltersPanelProps {
   visibleCount: number;
   onFiltersChange: (f: FilterState) => void;
   onThresholdsChange: (t: ThresholdState) => void;
-  onApply: () => void;
 }
 
 function parseNum(v: string): number {
@@ -101,7 +100,6 @@ export function FiltersPanel({
   visibleCount,
   onFiltersChange,
   onThresholdsChange,
-  onApply,
 }: FiltersPanelProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [showThresholds, setShowThresholds] = useState(false);
@@ -122,8 +120,7 @@ export function FiltersPanel({
 
   const resetFilters = useCallback(() => {
     onFiltersChange(defaultFilters);
-    onApply();
-  }, [onFiltersChange, onApply]);
+  }, [onFiltersChange]);
 
   return (
     <div className="rounded-lg border border-border bg-surface-elevated mb-4 overflow-hidden">
@@ -151,15 +148,8 @@ export function FiltersPanel({
           </span>
           <button
             type="button"
-            onClick={onApply}
-            className="px-3 py-1.5 bg-button-primary hover:bg-button-primary-hover text-button-text text-sm rounded-md cursor-pointer"
-          >
-            Apply
-          </button>
-          <button
-            type="button"
             onClick={resetFilters}
-            className="px-3 py-1.5 bg-transparent border border-border text-text text-sm rounded-md hover:bg-surface-hover cursor-pointer"
+            className="px-3 py-1.5 bg-transparent border-2 border-border text-text text-sm rounded-md cursor-pointer transition-all duration-150 hover:bg-surface-hover hover:border-focus-ring hover:scale-105 active:bg-surface-muted active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated"
           >
             Reset
           </button>

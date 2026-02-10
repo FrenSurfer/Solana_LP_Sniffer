@@ -1,39 +1,39 @@
 @import "tailwindcss";
 
-/* ========== Design tokens – tout le thème du site en un seul endroit ========== */
+/* ========== Design tokens – theme in one place ========== */
 :root {
-  /* Fond & texte de base */
+  /* Background & base text */
   --background: #18181b;
   --foreground: #e4e4e7;
 
-  /* Surfaces (tableaux, panneaux, cartes) */
+  /* Surfaces (tables, panels, cards) */
   --surface: #09090b;
   --surface-elevated: #27272a;
   --surface-hover: #3f3f46;
   --surface-muted: rgba(63, 63, 70, 0.5);
 
-  /* Bordures */
+  /* Borders */
   --border: #52525b;
   --border-muted: #71717a;
 
-  /* Texte */
+  /* Text */
   --text: #e4e4e7;
   --text-muted: #a1a1aa;
   --text-dim: #71717a;
   --text-inverse: #18181b;
 
-  /* Sémantique (variations, alertes) */
+  /* Semantic (variations, alerts) */
   --positive: #10b981;
   --negative: #ef4444;
   --warning: #f59e0b;
   --warning-muted: rgb(245 158 11 / 0.2);
 
-  /* Liens & actions */
+  /* Links & actions */
   --link: #60a5fa;
   --link-hover: #93c5fd;
   --focus-ring: #3b82f6;
 
-  /* Boutons */
+  /* Buttons */
   --button-text: #ffffff;
   --button-primary: #2563eb;
   --button-primary-hover: #3b82f6;
@@ -42,17 +42,17 @@
   --button-danger: #dc2626;
   --button-danger-hover: #ef4444;
 
-  /* Champs & formulaires */
+  /* Form fields */
   --input-bg: #3f3f46;
   --input-border: #52525b;
   --input-disabled: #52525b;
 
-  /* Erreurs */
+  /* Errors */
   --error-bg: rgb(127 29 29 / 0.3);
   --error-border: #b91c1c;
   --error-text: #fca5a5;
 
-  /* Largeur minimale de la page (scroll horizontal en dessous) */
+  /* Minimum page width (horizontal scroll below) */
   --page-min-width: 1100px;
 
   /* Premium / trading app: radius & shadows */

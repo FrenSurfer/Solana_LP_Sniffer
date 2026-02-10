@@ -1,6 +1,7 @@
 import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
 import { BirdeyeAPIClient } from "./birdeye.js";
 import { getPriceChangeByAddress } from "./dexscreener.js";
 import { processTokenList } from "./dataProcessor.js";
@@ -59,8 +60,27 @@ async function fetchTokenData(forceRefresh = false): Promise<void> {
   console.info(`Processed ${tokenData.length} tokens (ready to serve)`);
 }
 
+const corsOrigin = process.env.CORS_ORIGIN;
 const app = Fastify({ logger: true });
-await app.register(cors, { origin: true });
+
+await app.register(cors, {
+  origin: corsOrigin
+    ? corsOrigin.split(",").map((o) => o.trim())
+    : true,
+});
+
+// Rate limit: per IP, max N requests per window (prevents abuse / overload)
+const rateLimitMax = Number(process.env.RATE_LIMIT_MAX) || 30;
+const rateLimitWindowMs = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60_000; // 1 min
+await app.register(rateLimit, {
+  max: rateLimitMax,
+  timeWindow: rateLimitWindowMs,
+  keyGenerator: (request) => {
+    const forwarded = request.headers["x-forwarded-for"];
+    const ip = typeof forwarded === "string" ? forwarded.split(",")[0].trim() : request.ip;
+    return ip ?? "unknown";
+  },
+});
 
 app.get("/api/tokens", async (_request, reply) => {
   if (!tokenData.length) {
@@ -82,10 +102,15 @@ app.post("/api/refresh-cache", async (_request, reply) => {
   }
 });
 
-app.post<{ Body: { addresses: string[] } }>(
+app.post<{ Body: { addresses?: string[] } }>(
   "/api/compare",
   async (request, reply) => {
-    const { addresses } = request.body;
+    const { addresses } = request.body ?? {};
+    if (!Array.isArray(addresses) || addresses.length < 2 || addresses.length > 20) {
+      return reply.status(400).send({
+        error: "Body must contain 'addresses' (array, 2–20 items)",
+      });
+    }
     const compared = tokenData.filter((t) => addresses.includes(t.address));
     return reply.send(compared);
   }

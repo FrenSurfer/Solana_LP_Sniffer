@@ -312,7 +312,7 @@ export function TokenTable({
                     onSort(PRICE_TF_SORT_KEY[priceChangeTimeframe])
                   }
                   className="flex items-center justify-end gap-0.5 hover:text-link cursor-pointer"
-                  title="Trier par Δ Prix"
+                  title="Sort by price change"
                 >
                   <span className="opacity-50 text-xs">
                     {sortBy === PRICE_TF_SORT_KEY[priceChangeTimeframe]

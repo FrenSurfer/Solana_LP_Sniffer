@@ -122,7 +122,7 @@ const PORT = Number(process.env.PORT) || 3001;
 
 async function start() {
   await fetchTokenData();
-  setInterval(() => fetchTokenData(), 30 * 60 * 1000); // 30 min
+  setInterval(() => fetchTokenData(), 10 * 60 * 1000); // 10 min
   await app.listen({ port: PORT, host: "0.0.0.0" });
 }
 

@@ -1,6 +1,8 @@
 # Solana Token Sniffer
 
-A web tool **(local only for now)** to browse and filter **Solana tokens**. Data comes from **Birdeye** (token list, volume 24h, liquidity, market cap) and **DexScreener** (price change only). Table links open the chosen explorer (GMGN, Birdeye, or DexScreener) and Bubblemaps.
+A web tool to browse and filter **Solana tokens**.
+
+**Live:** [https://solanalpsniffer-production.up.railway.app/](https://solanalpsniffer-production.up.railway.app/) Data comes from **Birdeye** (token list, volume 24h, liquidity, market cap) and **DexScreener** (price change only). Table links open the chosen explorer (GMGN, Birdeye, or DexScreener) and Bubblemaps.
 
 ## Stack
 

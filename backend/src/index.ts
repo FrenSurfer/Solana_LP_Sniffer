@@ -51,10 +51,7 @@ async function fetchTokenData(forceRefresh = false): Promise<void> {
       `DexScreener: enriched ${enrichedPc}/${tokenData.length} with price change (m5/h1/h6/24h)`
     );
   } catch (e) {
-    console.warn(
-      "DexScreener enrichment failed (price change may be 0):",
-      e
-    );
+    console.warn("DexScreener enrichment failed (price change may be 0):", e);
   }
 
   console.info(`Processed ${tokenData.length} tokens (ready to serve)`);
@@ -64,9 +61,7 @@ const corsOrigin = process.env.CORS_ORIGIN;
 const app = Fastify({ logger: true });
 
 await app.register(cors, {
-  origin: corsOrigin
-    ? corsOrigin.split(",").map((o) => o.trim())
-    : true,
+  origin: corsOrigin ? corsOrigin.split(",").map((o) => o.trim()) : true,
 });
 
 // Rate limit: per IP, max N requests per window (prevents abuse / overload)
@@ -77,7 +72,10 @@ await app.register(rateLimit, {
   timeWindow: rateLimitWindowMs,
   keyGenerator: (request) => {
     const forwarded = request.headers["x-forwarded-for"];
-    const ip = typeof forwarded === "string" ? forwarded.split(",")[0].trim() : request.ip;
+    const ip =
+      typeof forwarded === "string"
+        ? forwarded.split(",")[0].trim()
+        : request.ip;
     return ip ?? "unknown";
   },
 });
@@ -106,7 +104,11 @@ app.post<{ Body: { addresses?: string[] } }>(
   "/api/compare",
   async (request, reply) => {
     const { addresses } = request.body ?? {};
-    if (!Array.isArray(addresses) || addresses.length < 2 || addresses.length > 20) {
+    if (
+      !Array.isArray(addresses) ||
+      addresses.length < 2 ||
+      addresses.length > 20
+    ) {
       return reply.status(400).send({
         error: "Body must contain 'addresses' (array, 2–20 items)",
       });
@@ -122,7 +124,6 @@ async function start() {
   await fetchTokenData();
   setInterval(() => fetchTokenData(), 30 * 60 * 1000); // 30 min
   await app.listen({ port: PORT, host: "0.0.0.0" });
-  console.info(`API running at http://localhost:${PORT}`);
 }
 
 start().catch((err) => {

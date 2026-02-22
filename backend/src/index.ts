@@ -7,15 +7,31 @@ import { getPriceChangeByAddress } from "./dexscreener.js";
 import { processTokenList } from "./dataProcessor.js";
 import type { ProcessedToken } from "./types.js";
 
-const apiKey = process.env.API_KEY;
-if (!apiKey) {
-  throw new Error("API_KEY must be set in environment");
+const apiKeysRaw =
+  process.env.API_KEYS ?? process.env.API_KEY ?? "";
+const apiKeys = apiKeysRaw
+  .split(",")
+  .map((k) => k.trim())
+  .filter(Boolean);
+if (!apiKeys.length) {
+  throw new Error("API_KEY or API_KEYS must be set in environment");
 }
 
-const client = new BirdeyeAPIClient(apiKey);
+const birdeyeClients = apiKeys.map(
+  (key) => new BirdeyeAPIClient(key, "data")
+);
+let birdeyeClientIndex = 0;
+
+function getNextBirdeyeClient(): BirdeyeAPIClient {
+  const client = birdeyeClients[birdeyeClientIndex];
+  birdeyeClientIndex = (birdeyeClientIndex + 1) % birdeyeClients.length;
+  return client;
+}
+
 let tokenData: ProcessedToken[] = [];
 
 async function fetchTokenData(forceRefresh = false): Promise<void> {
+  const client = getNextBirdeyeClient();
   const tokens = await client.getAllTokens(1000, !forceRefresh);
   if (!tokens.length) {
     console.error("No tokens from API");
@@ -122,7 +138,7 @@ const PORT = Number(process.env.PORT) || 3001;
 
 async function start() {
   await fetchTokenData();
-  setInterval(() => fetchTokenData(), 10 * 60 * 1000); // 10 min
+  setInterval(() => fetchTokenData(), 15 * 60 * 1000); // 15 min
   await app.listen({ port: PORT, host: "0.0.0.0" });
 }
 
